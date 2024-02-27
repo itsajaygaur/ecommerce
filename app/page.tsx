@@ -1,6 +1,8 @@
 "use server"
 import ProductCard from '@/components/ProductCard'
 import Navbar from '@/components/Navbar'
+import { Product } from './type'
+
 export default async function Home() {
 
 
@@ -10,10 +12,10 @@ export default async function Home() {
   return (
     <div className='max-w-[95%] mx-auto' >
 
-    <Navbar />
+    {/* <Navbar /> */}
     <div className='grid grid-cols-4 gap-6 place-items-center ' >
         {
-        allProducts && allProducts.map((product: any) => (
+        allProducts && allProducts.map((product: Product) => (
             <ProductCard key={product.id} product={product} />
           ))
         }
