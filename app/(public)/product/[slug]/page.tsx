@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Product } from "@/app/type"
+import { Product } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import AddToCartBtn from "@/components/AddToCartBtn"
 
@@ -21,8 +21,8 @@ export default async function ProductSlug({params}: any){
                 {
                     selectedProduct &&
                     <div className="flex gap-6" >
-                        <div className="basis-[65%] bg-gray-200 py-20" >
-                            <Image className=" aspect-square object-contain mx-auto mix-blend-multiply" src={selectedProduct.image} width={400} height={400} alt="product image" />
+                        <div className="basis-[65%] bg-gray-200 p-20" >
+                            <Image className=" aspect-[3/4] object-contain mx-auto mix-blend-multiply" src={selectedProduct.image} width={400} height={400} alt="product image" />
                         </div>
                         <div className="basis-[35%]" >
                             <h2 className="text-3xl mb-4 font-semibold" >{selectedProduct.title}</h2>

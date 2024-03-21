@@ -44,7 +44,7 @@ export default function Cart(){
           {
             items.length > 0 ? items.map(item => (
 
-            <div className="mt-10 flex justify-between gap-2 border-b-2 pb-4" >
+            <div key={item.id} className="mt-10 flex justify-between gap-2 border-b-2 pb-4" >
               {/* <Image className="aspect-square w-fit object-contain" src={product.image} width={60} height={60} alt={product.name} /> */}
 
               <div className=" bg-gray-200 shrink-0 p-1 " >
@@ -58,6 +58,9 @@ export default function Cart(){
 
               <div>
                   <p className="text-lg font-semibold" ><span>₹</span>{item.price}</p>
+              </div>
+              <div>
+                {item?.quantity && <p>{item.quantity}</p> }
               </div>
 
             </div>
