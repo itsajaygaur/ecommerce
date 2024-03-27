@@ -46,7 +46,7 @@ export async function addProduct(formData: FormData): Promise<State>{
         }
         const productImage = product.image
 
-        interface Data  { path: string, id: string, fullPath: string}
+        type Data = { path: string, id: string, fullPath: string}
         
         const { data, error } = await supabase.storage.from('ecommerce').upload(productImage.name, productImage)
         if(error) return {success: false, message: error.message}
@@ -67,5 +67,14 @@ export async function addProduct(formData: FormData): Promise<State>{
         return {success: true, message: "Product added successfully"}
     } catch (error) {
         return {success: false,  message: 'Something went wrong. Please try again later.'}
+    }
+}
+
+export async function getProducts(){
+    try {
+        const allProducts = await  db.select().from(products)
+        return {success: true, data: allProducts}
+    } catch (error) {
+        return {success: false, message: "Failed to get data!"}
     }
 }

@@ -1,19 +1,20 @@
 import { z } from "zod"
+import { Icons } from "@/components/Icons";
 
-interface Rating {
+type Rating = {
     rate: number;
     count: number;
 }
 
-export interface Product {
+export type Product = {
     id: number;
     title: string;
     price: number;
     description: string;
     category: string;
     image: string;
-    // rating: Rating;
-    // quantity?: number
+    rating: Rating;
+    quantity?: number
 }
 
 export const productSchema = z.object({
@@ -28,3 +29,13 @@ export const productSchema = z.object({
     .refine((file) => file?.length == 1, 'File is required.')
     .refine((file) => file[0]?.size <= 6000000, `Max file size is 6MB.`),
 })
+
+export type NavItem = {
+    title: string;
+    href?: string;
+    disabled?: boolean;
+    external?: boolean;
+    icon?: keyof typeof Icons;
+    label?: string;
+    description?: string;
+  }

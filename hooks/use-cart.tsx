@@ -1,5 +1,6 @@
 import {create} from "zustand";
-import { Product } from "@/app/type";
+// import { Product } from "@/app/type";
+import { Product } from "@/lib/types";
 
 
 type CartState = {
