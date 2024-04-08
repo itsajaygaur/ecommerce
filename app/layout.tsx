@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 // import { Toaster } from "@/components/ui/sonner";
 import { Toaster } from "sonner";
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,8 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className}`}>
         {/* <Navbar /> */}
+        <NextTopLoader showSpinner={false} />
         {children}
         <Toaster richColors />
       </body>

@@ -12,17 +12,21 @@ import {
 } from "@/components/ui/form"
 import {useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { productSchema } from "@/lib/types"
+import { Product, productSchema, updateProductSchema } from "@/lib/types"
 import {z} from "zod"
-import { addProduct } from "@/app/actions"
+import { addProduct, updateProduct } from "@/app/actions"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
-import AllProducts from "./DbProducts"
+import { useEffect } from "react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 
-export default function AddProductForm(){
+export default function AddProductForm({product}: {product?: Product | null } ){
 
-    const form = useForm<z.infer<typeof productSchema>>({resolver: zodResolver(productSchema), defaultValues: {
+    const router = useRouter()
+
+    const form = useForm<z.infer<typeof productSchema | typeof updateProductSchema>>({resolver: zodResolver(product ?  updateProductSchema : productSchema), defaultValues: {
         title: "",
         description: "",
         price: "",
@@ -31,7 +35,10 @@ export default function AddProductForm(){
     }})
     
     const fileRef = form.register("image");
-    
+
+    const productImage = form.watch('image')
+
+
     async function submitProduct(data: z.infer<typeof productSchema>){
     
         // console.log('data -', data)
@@ -44,9 +51,10 @@ export default function AddProductForm(){
                 formData.append(key, value)
             })
         
-            const res = await addProduct( formData)
+            const res = await (product ? updateProduct(formData, product) : addProduct( formData))
             if(res.success){
                 form.reset()
+                router.push('/admin/products')
                 toast.success(res.message)
                 return
             }
@@ -56,12 +64,44 @@ export default function AddProductForm(){
         }
     }
 
+    useEffect(() => {
+        if(!product) return
+        form.setValue('title', product.title)
+        form.setValue('description', product.description)
+        form.setValue('price', JSON.stringify(product.price))
+        form.setValue('category', product.category)
+
+        // Object.entries(product).map(([key, value]) => {
+        //     form.setValue(key, value)
+        // } )
+
+    }, [product])
 
 
     return (
         <Form {...form} >
 
         <form onSubmit={form.handleSubmit(submitProduct)} className="flex flex-col gap-5" >
+
+        <FormField 
+                control={form.control}
+                name="image"
+                
+                render={({field}) => (
+                    <FormItem >
+                        <FormLabel htmlFor="file" >
+            
+                        <Image className="object-cover w-full aspect-video" src={ (productImage && productImage.length && URL.createObjectURL(productImage[0])) || (product?.image && `https://kzboeyfgixrlsgzaanot.supabase.co/storage/v1/object/public/ecommerce/${product?.image}`) || "/banner-kid.jpg"} width={300} height={300} alt="product image" />
+
+                        </FormLabel>
+                        <FormControl  >
+                            <Input id="file" type="file"  {...fileRef} className="hidden" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                ) }
+            />
+        
 
             <FormField 
                 control={form.control}
@@ -117,27 +157,15 @@ export default function AddProductForm(){
                 ) }
             />
 
-            <FormField 
-                control={form.control}
-                name="image"
-                render={({field}) => (
-                    <FormItem >
-                        <FormLabel></FormLabel>
-                        <FormControl  >
-                            <Input type="file"  {...fileRef}  />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                ) }
-            />
+
 
             <Button type="submit" disabled={form.formState.isSubmitting} >
                 
                 { 
                 form.formState.isSubmitting ? 
-                <> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Adding...</>
+                <> <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Saving...</>
                 : 
-                "Add Product"
+                "Save"
                 }
             </Button>
         </form>

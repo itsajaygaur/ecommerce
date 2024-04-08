@@ -8,9 +8,9 @@ export const navItems: NavItem[] = [
       label: "Dashboard",
     },
     {
-      title: "User",
-      href: "/",
+      title: "Products",
+      href: "/admin/products",
       icon: "user",
-      label: "user",
+      label: "products",
     },
   ];

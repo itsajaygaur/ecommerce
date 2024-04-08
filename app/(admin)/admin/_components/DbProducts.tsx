@@ -10,10 +10,37 @@ import {
     TableRow,
   } from "@/components/ui/table"
 
+  import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog"
+import Link from "next/link";
+
+import { EllipsisVertical } from "lucide-react";
+
+import { Pencil, Trash2 } from 'lucide-react';
+ 
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import CellAction from "./CellAction";
+
 export default async function AllProducts(){
     const result = await getProducts()
 
-    console.log('data --> ', result)
+    // console.log('data --> ', result)
     if(!result.success) return <p>{result.message}</p>
 
     return <div>
@@ -26,7 +53,7 @@ export default async function AllProducts(){
           <TableHead className="w-[100px]">Id</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Price</TableHead>
-          <TableHead className="text-right">Category</TableHead>
+          <TableHead className="">Category</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -38,7 +65,13 @@ export default async function AllProducts(){
                 <TableCell className="font-medium">{product.id}</TableCell>
                 <TableCell>{product.title}</TableCell>
                 <TableCell>{product.price}</TableCell>
-                <TableCell className="text-right">{product.category}</TableCell>
+                <TableCell className="">{product.category}</TableCell>
+                <TableCell className="text-right">
+
+                <CellAction product={product} />
+
+
+                </TableCell>
               </TableRow>
             ))
         }

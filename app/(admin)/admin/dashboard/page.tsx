@@ -1,5 +1,5 @@
-import AddProductForm from "./AddProductForm"
-import AllProducts from "./DbProducts"
+import AddProductForm from "../_components/AddProductForm"
+import AllProducts from "../_components/DbProducts"
 
 
 export default function Dashboard(){

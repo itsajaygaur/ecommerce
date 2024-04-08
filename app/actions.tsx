@@ -5,6 +5,8 @@ import { products } from "@/db/schema"
 import { Product, productSchema } from "@/lib/types"
 import { createClient } from '@supabase/supabase-js'
 import {z} from "zod"
+import { revalidatePath } from "next/cache"
+import { eq } from "drizzle-orm"
 
 
 
@@ -64,9 +66,68 @@ export async function addProduct(formData: FormData): Promise<State>{
             await supabase.storage.from('ecommerce').remove([(data as Data).fullPath])
             return {success: false, message: "Failed to add product"} 
         } 
+        revalidatePath('/admin/products')
         return {success: true, message: "Product added successfully"}
     } catch (error) {
         return {success: false,  message: 'Something went wrong. Please try again later.'}
+    }
+}
+
+export async function updateProduct(formData: FormData, oldProduct: Product): Promise<State>{
+    try {
+        const product = {
+            title: formData.get('title') as string,
+            price: formData.get('price'),
+            description: formData.get('description') as string,
+            category: formData.get('category') as string,
+            // image: formData.get('image') as File,
+        }
+
+        const productImage = formData.get('image') as File
+
+        // console.log('product-data', product)
+        // return {success: false, message: "checking"}
+        
+        type Data = { path: string, id: string, fullPath: string}
+        
+        let dataToUpdate: any = { ...product, price: Number(product.price) }
+        if(productImage && productImage as any !== 'undefined'){
+            dataToUpdate.image = productImage.name
+            const { data, error } = await supabase.storage.from('ecommerce').upload(productImage.name, productImage)
+            await supabase.storage.from('ecommerce').remove([oldProduct.image])
+            if(error) return {success: false, message: error.message}
+
+        }
+        
+        const updateData = await db.update(products).set(dataToUpdate).where(eq(products.id, Number(oldProduct.id)))
+        if(!updateData){
+            await supabase.storage.from('ecommerce').remove([productImage.name])
+            return {success: false, message: "Failed to add product"} 
+        } 
+        revalidatePath('/admin/products')
+        return {success: true, message: "Product added successfully"}
+
+    } catch (error) {
+        return {success: false, message: "Something went wrong. Please try again later."}
+    }
+}
+
+export async function deleteProduct(id: number, image: string){
+    try {
+        if(!id || !image) return {success: false, message: "Provide details to delete product"}
+
+        const {data, error} = await supabase.storage.from('ecommerce').remove([image])
+        if(error) return {success: false, message: error.message}
+
+        const deleteProduct = await db.delete(products).where(eq(products.id, id))
+
+        if(!deleteProduct) return {success: false, message: "Failed to delete product"}
+
+        revalidatePath('/admin/products')
+        return {success: true, message: "Product deleted successfully"}
+
+    } catch (error) {
+        return {success: false, message: "Something went wrong. Please try again later."}
     }
 }
 
@@ -75,6 +136,7 @@ export async function getProducts(){
         const allProducts = await  db.select().from(products)
         return {success: true, data: allProducts}
     } catch (error) {
+        console.log('err -> ', error)
         return {success: false, message: "Failed to get data!"}
     }
 }
