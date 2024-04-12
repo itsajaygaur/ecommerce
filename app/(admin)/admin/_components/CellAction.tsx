@@ -22,7 +22,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVertical } from "lucide-react";
+import {  Ellipsis } from "lucide-react";
 
 import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from "react";
@@ -60,7 +60,7 @@ export default function CellAction({product}: {product: Product}){
 
     return(
         <>
-        <AlertDialog open={isOpen} setOpen={setIsOpen}  >
+        <AlertDialog open={isOpen} onOpenChange={setIsOpen}  >
         <AlertDialogContent  >
         <AlertDialogHeader>
         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -85,7 +85,8 @@ export default function CellAction({product}: {product: Product}){
         <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost">
-            <EllipsisVertical size={18} />
+            {/* <EllipsisVertical size={18} /> */}
+            <Ellipsis size={16}  />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

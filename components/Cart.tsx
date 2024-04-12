@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import { useCart } from "@/hooks/use-cart";
 import { useCartSlide } from "@/hooks/use-cart";
+import { generateImageUrl } from "@/lib/utils";
 
 
 
@@ -29,8 +30,8 @@ export default function Cart(){
     return(
         <Sheet open={isOpened} onOpenChange={open} >
         <SheetTrigger asChild className=""  >
-          <Button variant="ghost" size="icon" className="rounded-none" >
-            <ShoppingCart />
+          <Button variant="outline" size="icon" >
+            <ShoppingCart size={20} />
           </Button>
         </SheetTrigger>
         <SheetContent className="flex flex-col justify-between" >
@@ -48,11 +49,11 @@ export default function Cart(){
               {/* <Image className="aspect-square w-fit object-contain" src={product.image} width={60} height={60} alt={product.name} /> */}
 
               <div className=" bg-gray-200 shrink-0 p-1 " >
-                  <Image className=" aspect-square object-contain mix-blend-multiply " src={item.image} width={70} height={70} alt={item.title} />
+                  <Image className=" aspect-square object-contain mix-blend-multiply " src={generateImageUrl(item?.image)} width={70} height={70} alt={item.title} />
               </div>
 
               <div className="flex-none" >
-                  <p>Ratings: {item.rating.rate}</p>
+                  {/* <p>Ratings: {item.rating.rate}</p> */}
                   <p>{item.category}</p>
               </div>
 
@@ -78,7 +79,7 @@ export default function Cart(){
 
           <SheetFooter>
             <div className="flex-grow" >
-              <p onClick={() => clearCart() } className="" >Empty Cart</p>
+              <Button variant="link" onClick={() => clearCart() } className="" >Empty Cart</Button>
             </div>
             {/* <SheetClose asChild  >
                 <Button type="submit">Ok</Button>

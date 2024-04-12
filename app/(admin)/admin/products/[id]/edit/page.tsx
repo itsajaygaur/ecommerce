@@ -7,7 +7,7 @@ export default async function ProductEdit({params: {id}}: {params: {id: string}}
 
     const product = await db.select().from(products).where(eq(products.id, Number(id)))
 
-    return <div className="max-w-2xl mx-auto" >
+    return <div className="max-w-2xl mx-auto py-10" >
         <AddProductForm product={product[0]} />
     </div>
 }

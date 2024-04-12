@@ -10,31 +10,6 @@ import {
     TableRow,
   } from "@/components/ui/table"
 
-  import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
-import Link from "next/link";
-
-import { EllipsisVertical } from "lucide-react";
-
-import { Pencil, Trash2 } from 'lucide-react';
- 
-import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import CellAction from "./CellAction";
 
 export default async function AllProducts(){
@@ -43,11 +18,11 @@ export default async function AllProducts(){
     // console.log('data --> ', result)
     if(!result.success) return <p>{result.message}</p>
 
-    return <div>
+    return <div className="border rounded-md" >
 
 
-<Table>
-      <TableCaption>A list of all your products</TableCaption>
+<Table className="" >
+      {/* <TableCaption>A list of all your products</TableCaption> */}
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">Id</TableHead>
@@ -56,17 +31,17 @@ export default async function AllProducts(){
           <TableHead className="">Category</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody >
 
         
       {
             result.data && result.data.map(product => (
-                <TableRow key={product.id}>
-                <TableCell className="font-medium">{product.id}</TableCell>
-                <TableCell>{product.title}</TableCell>
-                <TableCell>{product.price}</TableCell>
+                <TableRow key={product.id} className="" >
+                <TableCell className="font-medium ">{product.id}</TableCell>
+                <TableCell className="" >{product.title}</TableCell>
+                <TableCell className="" >{product.price}</TableCell>
                 <TableCell className="">{product.category}</TableCell>
-                <TableCell className="text-right">
+                <TableCell className="text-right ">
 
                 <CellAction product={product} />
 

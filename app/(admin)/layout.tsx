@@ -8,9 +8,11 @@ export default function DashboardLayout({children}: Readonly<{children: React.Re
         <Header />
         <div className="flex h-screen overflow-hidden">
         <Sidebar />
-        <main className="w-full pt-16">
+        <main className="w-full pt-16 ">
           <ScrollArea className="h-full" >
-          {children}
+            <div className="px-8" >
+            {children}
+            </div>
           </ScrollArea>
         </main>
       </div>

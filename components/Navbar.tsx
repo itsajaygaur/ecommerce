@@ -3,15 +3,16 @@ import {Input} from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import Cart from './Cart';
 import { search } from '@/app/actions';
+import ThemeToggle from './layout/Theme/ThemeToggle';
 
 
 export default async function Navbar() {
 
 
   return (
-    <nav className=" flex justify-between items-center max-w-[95%] mx-auto mb-1">
+    <nav className=" flex justify-between items-center max-w-[95%] mx-auto mb-1 h-16">
       <div className='flex-1' >
-        <Link href="/" className='my-4 inline-block ' >
+        <Link href="/" className=' inline-block ' >
           <h1 className="text-3xl ">Premium store</h1>
         </Link>
       </div>
@@ -23,8 +24,8 @@ export default async function Navbar() {
             </button>
         </form>
 
-        <div className="flex-1 shrink-0 text-end" >
-        
+        <div className="flex-1 shrink-0 text-end flex items-center gap-3 justify-end" >
+            <ThemeToggle />
             <Cart />
 
       </div>

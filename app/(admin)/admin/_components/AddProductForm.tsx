@@ -16,11 +16,10 @@ import { Product, productSchema, updateProductSchema } from "@/lib/types"
 import {z} from "zod"
 import { addProduct, updateProduct } from "@/app/actions"
 import { toast } from "sonner"
-import { Loader2 } from "lucide-react"
+import { Loader2, ImagePlus } from "lucide-react"
 import { useEffect } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-
 
 export default function AddProductForm({product}: {product?: Product | null } ){
 
@@ -90,8 +89,17 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                 render={({field}) => (
                     <FormItem >
                         <FormLabel htmlFor="file" >
-            
-                        <Image className="object-cover w-full aspect-video" src={ (productImage && productImage.length && URL.createObjectURL(productImage[0])) || (product?.image && `https://kzboeyfgixrlsgzaanot.supabase.co/storage/v1/object/public/ecommerce/${product?.image}`) || "/banner-kid.jpg"} width={300} height={300} alt="product image" />
+                         <p className="mb-3" > Image </p>
+                        {
+                            ((!productImage || !productImage.length) && !product?.image) ?
+                            <div className="flex items-center justify-center w-full aspect-video border-2 border-dashed rounded-md" >
+                                <ImagePlus size={32} />
+                            </div>
+                            :
+                            <Image className="object-cover w-full aspect-video rounded-md" src={ (productImage && productImage.length && URL.createObjectURL(productImage[0])) || (product?.image && `https://kzboeyfgixrlsgzaanot.supabase.co/storage/v1/object/public/ecommerce/${product?.image}`)} width={288} height={288} alt="product image" />
+
+                        }
+
 
                         </FormLabel>
                         <FormControl  >
@@ -108,7 +116,7 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                 name="title"
                 render={({field}) => (
                     <FormItem>
-                        <FormLabel></FormLabel>
+                        <FormLabel>Title</FormLabel>
                         <FormControl>
                             <Input placeholder="Title" {...field} />
                         </FormControl>
@@ -121,7 +129,7 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                 name="description"
                 render={({field}) => (
                     <FormItem>
-                        <FormLabel></FormLabel>
+                        <FormLabel>Description</FormLabel>
                         <FormControl>
                             <Input placeholder="Description" {...field} />
                         </FormControl>
@@ -134,7 +142,7 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                 name="price"
                 render={({field}) => (
                     <FormItem>
-                        <FormLabel></FormLabel>
+                        <FormLabel>Price</FormLabel>
                         <FormControl>
                             <Input placeholder="Price" type="number" {...field}  />
                         </FormControl>
@@ -148,7 +156,7 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                 name="category"
                 render={({field}) => (
                     <FormItem>
-                        <FormLabel></FormLabel>
+                        <FormLabel>Category</FormLabel>
                         <FormControl>
                             <Input placeholder="Category" {...field} />
                         </FormControl>
