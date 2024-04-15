@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useCart } from "@/hooks/use-cart";
 import { useCartSlide } from "@/hooks/use-cart";
 import { generateImageUrl } from "@/lib/utils";
+import { ScrollArea } from "./ui/scroll-area";
 
 export default function Cart() {
   // const response = await fetch('https://fakestoreapi.com/products')
@@ -31,21 +32,23 @@ export default function Cart() {
           <ShoppingCart size={20} />
           {
             items.length > 0 &&
-            <span className="absolute -top-2 -right-2 bg-red-600/35 rounded-full size-5" >{items.length}</span>
+            <span className="text-sm absolute -top-2 -right-2 bg-red-600/35 rounded-full size-5" >{items.length}</span>
           }
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col justify-between">
-        <div>
+        {/* <div > */}
           <SheetHeader>
             <SheetTitle>My cart</SheetTitle>
           </SheetHeader>
+
+<ScrollArea className="overflow-y-auto h-full" >
 
           {items.length > 0 ? (
             items.map((item) => (
               <div
                 key={item.id}
-                className="mt-10 flex gap-2 border-b-2 pb-2"
+                className="mt-8 first:mt-5 flex gap-2 border-b-2 pb-3"
               >
                 {/* <Image className="aspect-square w-fit object-contain" src={product.image} width={60} height={60} alt={product.name} /> */}
 
@@ -115,7 +118,9 @@ export default function Cart() {
               <p>Your cart is empty</p>
             </div>
           )}
-        </div>
+</ScrollArea>
+
+        {/* </div> */}
 
         <SheetFooter>
           <div className="flex-grow flex gap-4 justify-between">

@@ -20,6 +20,7 @@ import { Loader2, ImagePlus } from "lucide-react"
 import { useEffect } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function AddProductForm({product}: {product?: Product | null } ){
 
@@ -80,7 +81,9 @@ export default function AddProductForm({product}: {product?: Product | null } ){
     return (
         <Form {...form} >
 
-        <form onSubmit={form.handleSubmit(submitProduct)} className="flex flex-col gap-5" >
+        <form onSubmit={form.handleSubmit(submitProduct)} className="flex flex-col md:flex-row gap-5 lg:gap-10" >
+
+        <div className="basis-[35%]" >
 
         <FormField 
                 control={form.control}
@@ -92,11 +95,11 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                          <p className="mb-3" > Image </p>
                         {
                             ((!productImage || !productImage.length) && !product?.image) ?
-                            <div className="flex items-center justify-center w-full aspect-video border-2 border-dashed rounded-md" >
+                            <div className="flex items-center justify-center w-full aspect-[375/563] border-2 border-dashed rounded-md" >
                                 <ImagePlus size={32} />
                             </div>
                             :
-                            <Image className="object-cover w-full aspect-video rounded-md" src={ (productImage && productImage.length && URL.createObjectURL(productImage[0])) || (product?.image && `https://kzboeyfgixrlsgzaanot.supabase.co/storage/v1/object/public/ecommerce/${product?.image}`)} width={288} height={288} alt="product image" />
+                            <Image className="object-cover w-full aspect-[375/563] rounded-md" src={ (productImage && productImage.length && URL.createObjectURL(productImage[0])) || (product?.image && `https://kzboeyfgixrlsgzaanot.supabase.co/storage/v1/object/public/ecommerce/${product?.image}`)} width={375} height={563} alt="product image" />
 
                         }
 
@@ -109,7 +112,11 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                     </FormItem>
                 ) }
             />
+        </div>
+
         
+        <div className="basis-[65%] flex flex-col gap-5 lg:gap-7" >
+
 
             <FormField 
                 control={form.control}
@@ -131,7 +138,7 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                     <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                            <Input placeholder="Description" {...field} />
+                            <Textarea rows={6} placeholder="Description" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -176,6 +183,8 @@ export default function AddProductForm({product}: {product?: Product | null } ){
                 "Save"
                 }
             </Button>
+        </div>
+
         </form>
     </Form>
     )
