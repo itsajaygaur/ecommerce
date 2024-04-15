@@ -1,4 +1,4 @@
-"use server"
+// "use server"
 import ProductCard from '@/components/ProductCard'
 import Navbar from '@/components/Navbar'
 import { Product } from '@/lib/types'

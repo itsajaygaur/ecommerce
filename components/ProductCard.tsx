@@ -23,7 +23,7 @@ export default function ProductCard({product}: {product: Product}){
     return(
         <Link href={`/product/${product.id}`} className="inline-block w-full" >
             <div className=" " >
-                <Image className=" w-full object-contain " src={generateImageUrl(product?.image)} width={288} height={288} alt={product.title} />
+                <Image className=" w-full object-cover aspect-[375/563] " src={generateImageUrl(product?.image)} width={375} height={563} alt={product.title} />
             </div>
             <TooltipProvider  delayDuration={200} >
             <Tooltip>

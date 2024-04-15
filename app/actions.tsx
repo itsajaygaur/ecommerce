@@ -67,7 +67,7 @@ export async function addProduct(formData: FormData): Promise<State>{
             return {success: false, message: "Failed to add product"} 
         } 
         revalidatePath('/admin/products')
-        revalidatePath('/')
+        // revalidatePath('/')
         return {success: true, message: "Product added successfully"}
     } catch (error) {
         return {success: false,  message: 'Something went wrong. Please try again later.'}

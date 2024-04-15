@@ -54,7 +54,7 @@ export default function Cart() {
 
                 {/* <div className=" shrink-0 p-1 "> */}
                   <Image
-                    className="flex-[0_0_20%] object-contain "
+                    className="flex-[0_0_20%] object-cover aspect-[375/563] "
                     src={generateImageUrl(item?.image)}
                     width={70}
                     height={70}

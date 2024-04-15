@@ -27,7 +27,7 @@ export default async function ProductSlug({params}: any){
                     selectedProduct &&
                     <div className="flex gap-6" >
                         <div className="basis-[50%]" >
-                            <Image className=" mx-auto w-full" src={generateImageUrl(selectedProduct?.image)} width={400} height={400} alt="product image" />
+                            <Image className=" mx-auto w-full object-cover aspect-[375/563]" src={generateImageUrl(selectedProduct?.image)} width={400} height={400} alt="product image" />
                         </div>
                         <div className="basis-[50%]" >
                             <h2 className="text-2xl mb-1" >{selectedProduct.title}</h2>
