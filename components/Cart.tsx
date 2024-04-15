@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,76 +16,121 @@ import { useCart } from "@/hooks/use-cart";
 import { useCartSlide } from "@/hooks/use-cart";
 import { generateImageUrl } from "@/lib/utils";
 
+export default function Cart() {
+  // const response = await fetch('https://fakestoreapi.com/products')
+  // const allProducts = await response.json()
+  // const product = allProducts[0];
+  const { isOpened, open } = useCartSlide();
 
+  const { items, clearCart, quantity, removeItem } = useCart();
 
-export default function Cart(){
-
-    // const response = await fetch('https://fakestoreapi.com/products')
-    // const allProducts = await response.json()
-    // const product = allProducts[0];
-    const {isOpened, open} = useCartSlide()
-
-    const {items, clearCart} = useCart()
-
-    return(
-        <Sheet open={isOpened} onOpenChange={open} >
-        <SheetTrigger asChild className=""  >
-          <Button variant="outline" size="icon" >
-            <ShoppingCart size={20} />
-          </Button>
-        </SheetTrigger>
-        <SheetContent className="flex flex-col justify-between" >
-          <div>
+  return (
+    <Sheet open={isOpened} onOpenChange={open}>
+      <SheetTrigger asChild className="">
+        <Button className="relative" variant="outline" size="icon">
+          <ShoppingCart size={20} />
+          {
+            items.length > 0 &&
+            <span className="absolute -top-2 -right-2 bg-red-600/35 rounded-full size-5" >{items.length}</span>
+          }
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="flex flex-col justify-between">
+        <div>
           <SheetHeader>
             <SheetTitle>My cart</SheetTitle>
           </SheetHeader>
 
+          {items.length > 0 ? (
+            items.map((item) => (
+              <div
+                key={item.id}
+                className="mt-10 flex gap-2 border-b-2 pb-2"
+              >
+                {/* <Image className="aspect-square w-fit object-contain" src={product.image} width={60} height={60} alt={product.name} /> */}
+
+                {/* <div className=" shrink-0 p-1 "> */}
+                  <Image
+                    className="flex-[0_0_20%] object-contain "
+                    src={generateImageUrl(item?.image)}
+                    width={70}
+                    height={70}
+                    alt={item.title}
+                  />
+                {/* </div> */}
+
+                <div className="ml-4 w-full" >
+
+                  <div className="flex-none mb-3">
+                    {/* <p>Ratings: {item.rating.rate}</p> */}
+                    <p>{item.title}</p>
+                  </div>
 
 
-          {
-            items.length > 0 ? items.map(item => (
+<div className="flex items-center justify-between gap-4" >
 
-            <div key={item.id} className="mt-10 flex justify-between gap-2 border-b-2 pb-4" >
-              {/* <Image className="aspect-square w-fit object-contain" src={product.image} width={60} height={60} alt={product.name} /> */}
+                  <div>
+                    <p className="text-lg font-semibold">
+                      <span>₹</span>
+                      {item.price}
+                    </p>
+                  </div>
 
-              <div className=" bg-gray-200 shrink-0 p-1 " >
-                  <Image className=" aspect-square object-contain mix-blend-multiply " src={generateImageUrl(item?.image)} width={70} height={70} alt={item.title} />
-              </div>
 
-              <div className="flex-none" >
-                  {/* <p>Ratings: {item.rating.rate}</p> */}
-                  <p>{item.category}</p>
-              </div>
+                  <div>
 
-              <div>
-                  <p className="text-lg font-semibold" ><span>₹</span>{item.price}</p>
-              </div>
-              <div>
-                {item?.quantity && <p>{item.quantity}</p> }
-              </div>
+                    {item.quantity && (
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="ghost"
+                          className="size-10 leading-10 text-gray-600 "
+                          onClick={() => item.quantity ===  1 ? removeItem(item.id) : quantity(item.id, "DECREASE")}
+                        >
+                          &minus;
+                        </Button>
 
-            </div>
-            ))
-            :
-          <div className="flex gap-4 items-center justify-center flex-col mt-32">
-            <ShoppingCart size={132} />
-            <p>Your cart is empty</p>
-          </div> 
+                        <p className="">{item.quantity}</p>
 
-}
+                        <Button
+                          variant="ghost"
+                          className="size-10 leading-10 text-gray-600"
+                          onClick={() => quantity(item.id, "INCREASE")}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    )}
+                  </div>
 </div>
 
-
-
-          <SheetFooter>
-            <div className="flex-grow" >
-              <Button variant="link" onClick={() => clearCart() } className="" >Empty Cart</Button>
+                </div>
+                {/* <div>
+                {item?.quantity && <p>{item.quantity}</p> }
+              </div> */}
+              </div>
+            ))
+          ) : (
+            <div className="flex gap-4 items-center justify-center flex-col mt-32">
+              <ShoppingCart size={132} />
+              <p>Your cart is empty</p>
             </div>
-            {/* <SheetClose asChild  >
+          )}
+        </div>
+
+        <SheetFooter>
+          <div className="flex-grow flex gap-4 justify-between">
+            <Button variant="link" onClick={() => clearCart()} className="">
+              Empty Cart
+            </Button>
+            <Button className="rounded-none" >
+              Checkout
+            </Button>
+          </div>
+          {/* <SheetClose asChild  >
                 <Button type="submit">Ok</Button>
             </SheetClose> */}
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-    )
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
 }

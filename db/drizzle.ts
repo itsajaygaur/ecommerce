@@ -13,7 +13,7 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres, { Sql } from 'postgres';
-// import * as schema from 'schema';
+import * as schema from './schema';
 
 let connection: Sql<{}>;
 
@@ -29,6 +29,6 @@ if (process.env.NODE_ENV === 'production') {
   connection = globalConnection.connection;
 }
 
-const db = drizzle(connection, { logger: process.env.NODE_ENV !== 'production' });
+const db = drizzle(connection, {schema, logger: process.env.NODE_ENV !== 'production' });
 
 export default db;

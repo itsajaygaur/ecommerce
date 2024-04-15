@@ -1,4 +1,6 @@
 import {create} from "zustand";
+import { persist, createJSONStorage } from 'zustand/middleware'
+
 // import { Product } from "@/app/type";
 import { Product } from "@/lib/types";
 
@@ -7,7 +9,8 @@ type CartState = {
     items: Product[]
     addItem: (product: Product) => void
     removeItem: (productId: Number) => void
-    clearCart: () => void
+    clearCart: () => void,
+    quantity: (id:  number, operation: 'INCREASE' | 'DECREASE') => void
 }
 
 type CartSlideState = {
@@ -15,7 +18,7 @@ type CartSlideState = {
     open: (shouldOpen: boolean) => void
 }
 
-export const useCart =  create<CartState>()((set) => ({
+export const useCart =  create<CartState>()(persist( (set) => ({
     items: [],
     // addItem: product => set(state => ({items: [...state.items, product] })),
     addItem: product => set(state => {
@@ -34,8 +37,20 @@ export const useCart =  create<CartState>()((set) => ({
     }),
     removeItem: id => set(state => ({items: state.items.filter(item => item.id !== id)}) ),
     clearCart: () => set(state => ({items: []})),
-    
-}))
+    quantity: (id, operation) => set(state => {
+        // return {items: state.items.map(item => item.id === id ? {...item, quantity: operation.operation === 'INCREASE' ? item?.quantity + 1 : item?.quantity - 1} : item)}
+
+        const updatedItems = state.items.map(item => {
+            if(item.id === id && item.quantity){
+                return {...item, quantity: operation === 'INCREASE' ? item?.quantity + 1 : item?.quantity - 1}
+            }
+            return item
+            }
+        )
+
+        return {items: updatedItems}
+    })
+}), {name: 'cart'}))
 
 
 export const useCartSlide = create<CartSlideState>(set => ({
