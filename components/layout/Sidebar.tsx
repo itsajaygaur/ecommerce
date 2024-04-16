@@ -1,6 +1,5 @@
 "use client"
 import { cn } from "@/lib/utils";
-import { NavItem } from "@/lib/types";
 import DashboardNav from "./DashboardNav";
 import { navItems } from "@/constants/data";
 

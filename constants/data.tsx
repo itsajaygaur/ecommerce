@@ -1,4 +1,4 @@
-import { NavItem } from "@/lib/types";
+import { NavItem } from "@/types";
 
 export const navItems: NavItem[] = [
     {
@@ -13,4 +13,10 @@ export const navItems: NavItem[] = [
       icon: "user",
       label: "products",
     },
+    // {
+    //   title: "Logout",
+    //   href: "/admin/products",
+    //   icon: "user",
+    //   label: "logout",
+    // },
   ];

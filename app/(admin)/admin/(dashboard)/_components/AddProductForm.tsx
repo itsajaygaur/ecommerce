@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/form"
 import {useForm} from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Product, productSchema, updateProductSchema } from "@/lib/types"
+import { updateProductSchema, productSchema } from "@/types/zodSchemas"
+import { Product } from "@/types"
 import {z} from "zod"
 import { addProduct, updateProduct } from "@/app/actions"
 import { toast } from "sonner"
@@ -54,7 +55,7 @@ export default function AddProductForm({product}: {product?: Product | null } ){
             const res = await (product ? updateProduct(formData, product) : addProduct( formData))
             if(res.success){
                 form.reset()
-                router.push('/admin/products')
+                router.replace('/admin/products')
                 toast.success(res.message)
                 return
             }

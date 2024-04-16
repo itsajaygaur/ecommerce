@@ -2,11 +2,15 @@
 import { redirect } from "next/navigation"
 import db from "@/db/drizzle"
 import { products } from "@/db/schema"
-import { Product, productSchema } from "@/lib/types"
+import { productSchema } from "@/types/zodSchemas"
+import { Product } from "@/types"
 import { createClient } from '@supabase/supabase-js'
 import {z} from "zod"
 import { revalidatePath } from "next/cache"
 import { eq } from "drizzle-orm"
+import { encrypt } from "@/lib/auth"
+import { cookies } from "next/headers"
+import { isValidPassowrd } from "@/lib/isValidPassword"
 
 
 
@@ -19,9 +23,6 @@ export type State = {
 }
 
 
-
-
-
 export async function addToCart(){
     const response = await fetch('')
 }
@@ -31,8 +32,7 @@ export async function search(formData: FormData){
       const query = formData.get('query')
       if(!query) redirect('/')
       redirect(`/?q=${query}`)
-  }
-
+}
 
 export async function addProduct(formData: FormData): Promise<State>{
 
@@ -135,9 +135,47 @@ export async function deleteProduct(id: number, image: string){
 export async function getProducts(){
     try {
         const allProducts = await  db.select().from(products)
+        if(!allProducts) return {success: false, message: "Failed to get data!"}
         return {success: true, data: allProducts}
     } catch (error) {
         console.log('err -> ', error)
         return {success: false, message: "Failed to get data!"}
     }
+}
+
+export async function getProductById(id: number){
+    try {
+        const product = await db.select().from(products).where(eq(products.id, id))
+        console.log('product -> ', product)
+        if(!product) return {success: false, message: "Failed to get data!"}
+        if(product.length === 0) return {success: false, message: "Product not found!"}
+        return {success: true, data: product[0]}
+    } catch (error) {
+        return {success: false, message: "Failed to get data!"}
+    }
+}
+
+export async function login({username = '', password = ''}: {username: string, password: string} ){
+    try {
+        if(!username || !password) return {success: false, message: "Please provide login and password"}
+
+        if(username === process.env.ADMIN_USERNAME && await isValidPassowrd(password, process.env.ADMIN_HASHED_PASSWORD as string)){
+            const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+            const token = await encrypt({username, expires})
+            cookies().set('session', token, {expires, httpOnly: true, secure: process.env.NODE_ENV === 'production' })
+            return {success: true, message: "Logged in successfully"}
+        }
+
+        return {success: false, message: "Invalid username or password"}
+
+    } catch (error) {
+        console.log('err -> ', error)
+        return {success: false, message: "Something went wrong. Please try again later."}
+    }
+}
+
+export async function logout(){
+        cookies().delete('session')
+        redirect('/admin/login')
+    
 }

@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import { Icons } from "@/components/Icons";
 import Link from "next/link";
-import { NavItem } from "@/lib/types";
+import { NavItem } from "@/types";
 import { Dispatch, SetStateAction } from "react";
 import { usePathname } from "next/navigation";
 

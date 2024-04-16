@@ -26,7 +26,7 @@ import {  Ellipsis } from "lucide-react";
 
 import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from "react";
-import { Product } from "@/lib/types";
+import { Product } from "@/types";
 import { deleteProduct } from "@/app/actions";
 
 export default function CellAction({product}: {product: Product}){

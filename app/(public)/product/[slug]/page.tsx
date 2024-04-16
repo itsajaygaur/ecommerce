@@ -2,7 +2,7 @@ import Image from "next/image"
 import { Product } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import AddToCartBtn from "@/components/AddToCartBtn"
-import { getProducts } from "@/app/actions"
+import { getProductById, getProducts } from "@/app/actions"
 import { generateImageUrl } from "@/lib/utils"
 
 export default async function ProductSlug({params}: any){
@@ -11,11 +11,12 @@ export default async function ProductSlug({params}: any){
 
     const id = params.slug
 
-    const response = await getProducts()
-    if(!response.success) return <p>{response.message || "Something went wrong!"}</p>
-    let allProducts = response.data 
+    // const response = await getProducts()
+    const response = await getProductById(id)
+    if(!response.success) return <p className="text-center text-2xl mt-10" >{response.message || "Something went wrong!"}</p>
+    let selectedProduct = response.data
 
-    const selectedProduct = allProducts?.find((item:Product) => item.id === +id)
+    // const selectedProduct = allProducts?.find((item:Product) => item.id === +id)
 
     // console.log('selected-product', selectedProduct)
 
