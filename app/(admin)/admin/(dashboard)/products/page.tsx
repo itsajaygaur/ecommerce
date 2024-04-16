@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
-import AllProducts from "../_components/DbProducts"
 import Link from "next/link"
 import { Plus } from "lucide-react"
+import AllProducts from "../_components/DbProducts"
 
 export default function ProductPage(){
     return <div className="mt-10" >

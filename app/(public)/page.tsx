@@ -1,7 +1,7 @@
 // "use server"
 import ProductCard from '@/components/ProductCard'
 import Navbar from '@/components/Navbar'
-import { Product } from '@/lib/types'
+import { Product } from '@/types'
 import Image from 'next/image'
 import { getProducts } from '../actions'
 

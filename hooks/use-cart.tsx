@@ -2,7 +2,7 @@ import {create} from "zustand";
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 // import { Product } from "@/app/type";
-import { Product } from "@/lib/types";
+import { Product } from "@/types";
 
 
 type CartState = {

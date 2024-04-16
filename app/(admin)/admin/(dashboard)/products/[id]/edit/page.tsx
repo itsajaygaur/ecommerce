@@ -1,7 +1,7 @@
 import { products } from "@/db/schema";
-import AddProductForm from "../../../_components/AddProductForm";
 import db from "@/db/drizzle";
 import { eq } from "drizzle-orm";
+import AddProductForm from "../../../_components/AddProductForm";
 
 export default async function ProductEdit({params: {id}}: {params: {id: string}}){
 

@@ -1,7 +1,7 @@
 "use client"
 import {Button} from "./ui/button"
 import { useCart, useCartSlide } from "@/hooks/use-cart"
-import { Product } from "@/lib/types"
+import { Product } from "@/types"
 
 export default function AddToCartBtn({product}:{product:Product}) {
 

@@ -9,7 +9,7 @@ import {
     TooltipTrigger,
   } from "@/components/ui/tooltip"
 import { useCart, useCartSlide } from "@/hooks/use-cart"
-import { Product } from "@/lib/types"
+import { Product } from "@/types"
 import { generateImageUrl } from "@/lib/utils"
 
 
