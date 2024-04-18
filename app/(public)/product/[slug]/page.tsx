@@ -19,12 +19,12 @@ export default async function ProductSlug({params}: any){
     // console.log('selected-product', selectedProduct)
 
     return(
-        <section className="max-w-[95%] mx-auto" >
+        <section className="max-w-[95%] mx-auto pb-8" >
             <div className="max-w-4xl mx-auto" >
 
                 {
                     selectedProduct &&
-                    <div className="flex gap-6" >
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-6" >
                         <div className="basis-[50%]" >
                             <Image className=" mx-auto w-full object-cover aspect-[375/563]" src={generateImageUrl(selectedProduct?.image)} width={400} height={400} alt="product image" />
                         </div>

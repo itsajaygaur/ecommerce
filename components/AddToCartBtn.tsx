@@ -9,6 +9,6 @@ export default function AddToCartBtn({product}:{product:Product}) {
     const {open} = useCartSlide()
 
     return(
-        <Button variant="outline" onClick={() => {addItem(product); open(true)}} className="mt-36 py-7 text-lg rounded-none w-full" >Add to Cart</Button>
+        <Button variant="outline" onClick={() => {addItem(product); open(true)}} className="mt-5 sm:mt-36 py-7 text-lg rounded-none w-full" >Add to Cart</Button>
     )
 }

@@ -11,6 +11,8 @@ import { eq } from "drizzle-orm"
 import { encrypt } from "@/lib/auth"
 import { cookies } from "next/headers"
 import { isValidPassowrd } from "@/lib/isValidPassword"
+import {Stripe} from "stripe"
+import { generateImageUrl } from "@/lib/utils"
 
 
 
@@ -146,7 +148,7 @@ export async function getProducts(){
 export async function getProductById(id: number){
     try {
         const product = await db.select().from(products).where(eq(products.id, id))
-        console.log('product -> ', product)
+        // console.log('product -> ', product)
         if(!product) return {success: false, message: "Failed to get data!"}
         if(product.length === 0) return {success: false, message: "Product not found!"}
         return {success: true, data: product[0]}
@@ -178,4 +180,54 @@ export async function logout(){
         cookies().delete('session')
         redirect('/admin/login')
     
+}
+
+export async function checkout(cartItems:  Product[], siteUrl: string){
+    let session: any
+    try {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+
+        const lineItems = cartItems.map(item => (
+            {
+
+                price_data: {
+                    currency: 'inr',
+                        product_data: {
+                        name: item.title,
+                        images: [generateImageUrl(item.image)],
+                        },
+                        unit_amount: item.price * 100,
+                        
+                },
+                quantity: item.quantity,
+                
+            }
+        ))
+    
+        session = await stripe.checkout.sessions.create({
+            // line_items: [{
+            //     price_data: {
+            //         currency: 'inr',
+            //          product_data: {
+            //             name: 'tes product',
+            //          },
+            //          unit_amount: 2000,
+            //     },
+            //     quantity: 1,
+            // }],
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode: 'payment',
+            success_url: `${siteUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${siteUrl}/`,
+            
+        })
+            // redirect(session.url as string)
+        
+    } catch (error) {
+        console.log('err -> ', error)
+        return {success: false, message: "Something went wrong. Please try again later."}
+    }
+    console.log('session -> ', session)
+    redirect(session.url as string)
 }

@@ -5,15 +5,15 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 export default function DashboardLayout({children}: Readonly<{children: React.ReactNode}>){
     return(
         <>
-        <Header />
-        <div className="flex h-screen overflow-hidden">
+        {/* <Header /> */}
+        <div className="flex-1 flex -mt-20">
         <Sidebar />
-        <main className="w-full pt-16 ">
-          <ScrollArea className="h-full" >
-            <div className="px-8" >
+        <main className="w-full">
+          {/* <ScrollArea className="h-full !overflow-x-auto" > */}
+            <div className="px-4 md:px-8 pb-6 pt-20" >
             {children}
             </div>
-          </ScrollArea>
+          {/* </ScrollArea> */}
         </main>
       </div>
         </>

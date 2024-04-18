@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest){
     }
 
     if(verifyToken && request.nextUrl.pathname.startsWith('/admin/login') ){
-        return NextResponse.redirect(new URL('/admin/products', request.url))
+        return NextResponse.redirect(new URL('/admin/dashboard', request.url))
     }
 
     if(!verifyToken){

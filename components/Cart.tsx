@@ -1,5 +1,5 @@
 "use client";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -10,6 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  
 } from "@/components/ui/sheet";
 import Image from "next/image";
 import { useCart } from "@/hooks/use-cart";
@@ -18,6 +19,8 @@ import { generateImageUrl } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 // import {seperator} from "@/components/ui/separator"
 import { Separator } from "@/components/ui/separator";
+import { checkout } from "@/app/actions";
+import Checkout from "./Checkout";
 
 export default function Cart() {
 
@@ -30,7 +33,7 @@ export default function Cart() {
   return (
     <Sheet open={isOpened} onOpenChange={open}>
       <SheetTrigger asChild className="">
-        <Button className="relative" variant="outline" size="icon">
+        <Button className="relative rounded-none" variant="outline" size="icon">
           <ShoppingCart size={20} />
           {items.length > 0 && (
             <span className="text-sm absolute -top-2 -right-2 bg-red-600/35 rounded-full size-5">
@@ -39,11 +42,16 @@ export default function Cart() {
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex flex-col justify-between">
+      <SheetContent className="flex flex-col justify-between w-screen min-[425px]:max-w-sm ">
         {/* <div > */}
         <SheetHeader>
           <SheetTitle>My cart</SheetTitle>
         </SheetHeader>
+
+        <SheetClose className="absolute right-4 top-4 rounded-none opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-zinc-100 dark:ring-offset-zinc-950 dark:focus:ring-zinc-300 dark:data-[state=open]:bg-zinc-800">
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
+      </SheetClose>
 
         <ScrollArea className="overflow-y-auto h-full">
           {items.length > 0 ? (
@@ -83,7 +91,7 @@ export default function Cart() {
                         <div className="flex items-center gap-3">
                           <Button
                             variant="ghost"
-                            className="size-10 leading-10 text-gray-600 "
+                            className="size-10 leading-10 text-gray-600 rounded-none"
                             onClick={() =>
                               item.quantity === 1
                                 ? removeItem(item.id)
@@ -97,7 +105,7 @@ export default function Cart() {
 
                           <Button
                             variant="ghost"
-                            className="size-10 leading-10 text-gray-600"
+                            className="size-10 leading-10 text-gray-600 rounded-none"
                             onClick={() => quantity(item.id, "INCREASE")}
                           >
                             +
@@ -132,7 +140,13 @@ export default function Cart() {
             </div>
             <Separator className="h-0.5 text-gray-400" />
             <div className=" mt-4 space-y-2">
-              <Button className="rounded-none w-full">Checkout</Button>
+
+              <Checkout cartItems={items} />
+
+              {/* <form action={checkout} >
+                <Button className="rounded-none w-full">Checkout</Button>
+              </form> */}
+
               <Button variant="link" onClick={() => clearCart()} className="w-full">
                 Empty Cart
               </Button>

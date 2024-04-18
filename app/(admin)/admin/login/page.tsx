@@ -56,8 +56,8 @@ export default function LoginForm() {
 
   
   return (
-    <section className="h-lvh flex items-center justify-center">
-      <Card className="w-full max-w-sm py-4">
+    <section className="h-full mt-[10%] flex items-center justify-center">
+      <Card className="w-full max-w-sm py-4 max-sm:border-none">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>

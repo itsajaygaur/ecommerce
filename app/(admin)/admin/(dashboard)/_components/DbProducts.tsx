@@ -11,6 +11,7 @@ import {
   } from "@/components/ui/table"
 
 import CellAction from "./CellAction";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default async function AllProducts(){
     const result = await getProducts()
@@ -20,8 +21,7 @@ export default async function AllProducts(){
 
     return <div className="border rounded-md" >
 
-
-<Table className="" >
+<Table  >
       {/* <TableCaption>A list of all your products</TableCaption> */}
       <TableHeader>
         <TableRow>
@@ -60,7 +60,6 @@ export default async function AllProducts(){
         </TableRow>
       </TableFooter> */}
     </Table>
-
 
 
     </div>
