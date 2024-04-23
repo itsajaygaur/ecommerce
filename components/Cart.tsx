@@ -33,7 +33,7 @@ export default function Cart() {
   return (
     <Sheet open={isOpened} onOpenChange={open}>
       <SheetTrigger asChild className="">
-        <Button className="relative rounded-none" variant="outline" size="icon">
+        <Button className="relative" variant="outline" size="icon">
           <ShoppingCart size={20} />
           {items.length > 0 && (
             <span className="text-sm absolute -top-2 -right-2 bg-red-600/35 rounded-full size-5">
@@ -48,7 +48,7 @@ export default function Cart() {
           <SheetTitle>My cart</SheetTitle>
         </SheetHeader>
 
-        <SheetClose className="absolute right-4 top-4 rounded-none opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-zinc-100 dark:ring-offset-zinc-950 dark:focus:ring-zinc-300 dark:data-[state=open]:bg-zinc-800">
+        <SheetClose className="absolute right-4 top-4 opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-zinc-950 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-zinc-100 dark:ring-offset-zinc-950 dark:focus:ring-zinc-300 dark:data-[state=open]:bg-zinc-800">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
       </SheetClose>
@@ -91,7 +91,7 @@ export default function Cart() {
                         <div className="flex items-center gap-3">
                           <Button
                             variant="ghost"
-                            className="size-10 leading-10 text-gray-600 rounded-none"
+                            className="size-10 leading-10 text-gray-600"
                             onClick={() =>
                               item.quantity === 1
                                 ? removeItem(item.id)
@@ -105,7 +105,7 @@ export default function Cart() {
 
                           <Button
                             variant="ghost"
-                            className="size-10 leading-10 text-gray-600 rounded-none"
+                            className="size-10 leading-10 text-gray-600"
                             onClick={() => quantity(item.id, "INCREASE")}
                           >
                             +

@@ -23,14 +23,14 @@ export default async function Navbar() {
       </div>
 
         <form action={search} className="flex items-center flex-auto max-w-md" >
-            <Input type="text" name='query' placeholder='Search products' className=" border-2 pr-10 rounded-none" />
+            <Input type="text" name='query' placeholder='Search products' className=" border-2 pr-10" />
             <button type='submit' className='-ml-8 z-10' >
              <Search />
             </button>
         </form>
 
         <div className="flex-1 shrink-0 text-end flex items-center gap-3 justify-end" >
-            <ThemeToggle noRound={true} />
+            <ThemeToggle />
             <Cart />
 
       </div>

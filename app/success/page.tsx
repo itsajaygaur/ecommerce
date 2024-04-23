@@ -26,7 +26,7 @@ export default async function SuccessPage({searchParams}: {searchParams: {sessio
 
         <section className="grid place-items-center h-lvh " >
             <ClearCart />
-        <Card className="max-w-md w-full text-center max-sm:border-none rounded-none" >
+        <Card className="max-w-md w-full text-center max-sm:border-none" >
             <CardHeader>
                 <BadgeCheck className="text-green-500 mx-auto" size={72} />
                 <CardTitle className="text-4xl" >Thank You!</CardTitle>
@@ -46,7 +46,7 @@ export default async function SuccessPage({searchParams}: {searchParams: {sessio
                     </div>
                 </CardContent>
                 <CardFooter className="pt-6" >
-                    <Button className="rounded-none mx-auto" >
+                    <Button className=" mx-auto" >
                         <Link href="/">Continue shopping</Link>
                     </Button>
                 </CardFooter>

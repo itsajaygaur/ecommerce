@@ -30,7 +30,7 @@ export default function ProductCard({product}: {product: Product}){
                 <TooltipTrigger className="mt-2" asChild>
                 <h2 className="text-xs overflow-ellipsis overflow-hidden whitespace-nowrap" >{product.title}</h2>
                 </TooltipTrigger>
-                <TooltipContent className="max-w-xs rounded-none" >
+                <TooltipContent className="max-w-xs" >
                     <p>{product.title}</p>
                 </TooltipContent>
             </Tooltip>
