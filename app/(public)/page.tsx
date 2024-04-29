@@ -22,7 +22,7 @@ export default async function Home({searchParams}: {searchParams: {q: string}}) 
     {/* {!searchParams.q && <Image className='mb-10' priority src="/banner-2.jpg" width={1920} height={1088} alt='banner image' />} */}
     <div className='max-w-[95%] mx-auto pb-8' >
 
-    <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center ' >
+    <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 place-items-center ' >
         {
           allProducts && allProducts.length === 0 ? <p>No products found!</p> :
           allProducts && allProducts.map((product: Product) => (
