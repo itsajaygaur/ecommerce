@@ -7,7 +7,7 @@ import { Product } from "@/types"
 import { createClient } from '@supabase/supabase-js'
 import {z} from "zod"
 import { revalidatePath } from "next/cache"
-import { eq } from "drizzle-orm"
+import { count, eq } from "drizzle-orm"
 import { encrypt } from "@/lib/auth"
 import { cookies } from "next/headers"
 import { isValidPassowrd } from "@/lib/isValidPassword"
@@ -16,7 +16,7 @@ import { generateImageUrl } from "@/lib/utils"
 
 
 
-const supabase = createClient('https://kzboeyfgixrlsgzaanot.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt6Ym9leWZnaXhybHNnemFhbm90Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcxMDUyNjAyNywiZXhwIjoyMDI2MTAyMDI3fQ.0oxswoit5pskiV3bx64883eM5rX5WtLKDH3AxV7EyzU')
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!)
 
 
 export type State = {
@@ -230,4 +230,21 @@ export async function checkout(cartItems:  Product[], siteUrl: string){
     }
     console.log('session -> ', session)
     redirect(session.url as string)
+}
+
+export async function getProductBySearchParams(page = '1'){
+    try {
+        // const result = await db.select().from(products).offset((Number(page) - 1) * 5).limit(5)
+        const result = await db.transaction(async tx => {
+            const data = await tx.select().from(products).offset((Number(page) - 1) * 10).limit(10)
+            const totalCount = await tx.select({count: count()}).from(products)
+            return {data, totalCount}
+
+        })
+
+        return {success: true, data: result}
+    } catch (error) {
+        console.log('err -> ', error)
+        return {success: false, message: "Failed to get data!"}
+    }
 }

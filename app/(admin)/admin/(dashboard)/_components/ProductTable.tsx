@@ -12,16 +12,24 @@ import {
 
 import CellAction from "./CellAction";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import { Product } from "@/types";
 
-export default async function AllProducts(){
-    const result = await getProducts()
+export default function ProductTable({products, totalProductCount, currentPage = '1'}: {products: Product[], totalProductCount?: number, currentPage: string}){
 
-    // console.log('data --> ', result)
-    if(!result.success) return <p>{result.message}</p>
+  const pages = Array.from({length : (Math.ceil(totalProductCount! / 10)) || 0}, (_, i) => i + 1)
 
-    return <div className="border rounded-md" >
+    return <div  >
 
-<Table  >
+<Table className="border rounded-md"  >
       {/* <TableCaption>A list of all your products</TableCaption> */}
       <TableHeader>
         <TableRow>
@@ -35,7 +43,7 @@ export default async function AllProducts(){
 
         
       {
-            result.data && result.data.map(product => (
+            products && products.map(product => (
                 <TableRow key={product.id} className="" >
                 <TableCell className="font-medium ">{product.id}</TableCell>
                 <TableCell className="" >{product.title}</TableCell>
@@ -60,6 +68,26 @@ export default async function AllProducts(){
         </TableRow>
       </TableFooter> */}
     </Table>
+      {
+        pages.length > 1 &&
+        <div className="mt-8" >
+
+    <Pagination>
+      <PaginationContent>
+
+        {
+          pages
+            .map(i => (
+              <PaginationItem key={i} value={i}>
+                <PaginationLink href={`/admin/products/?page=${i}`} isActive={JSON.stringify(i) === currentPage} >{i}</PaginationLink>
+              </PaginationItem>
+            ))
+        }
+      </PaginationContent>
+    </Pagination>
+      </div>
+          }
+
 
 
     </div>
