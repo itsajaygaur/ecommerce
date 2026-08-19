@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.06"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.045"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="900" height="1200" fill="#ebe6de"/>
+  <rect width="900" height="1200" fill="url(#g)"/>
+
+  <ellipse cx="450" cy="960" rx="250" ry="46" fill="#000" opacity="0.16" filter="url(#soft)"/>
+
+  
+    <path d="M230 420 Q450 370 670 420 L680 800 Q450 860 220 800 Z" fill="#b9c4c0"/>
+    <g stroke="#5a6663" stroke-width="4" opacity="0.35">
+      <path d="M230 520 Q450 470 672 520 M228 620 Q450 570 674 620 M226 720 Q450 670 676 720"/>
+    </g>
+    <g stroke="#9daaa5" stroke-width="7" stroke-linecap="round">
+      <path d="M260 812 L255 870 M330 826 L327 886 M400 834 L398 894 M470 836 L470 896 M540 834 L542 894 M610 826 L613 886 M670 812 L675 870"/>
+    </g>
+
+  <rect width="900" height="1200" filter="url(#grain)" opacity="0.55"/>
+</svg>

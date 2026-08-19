@@ -1,27 +1,33 @@
-import { Icons } from "@/components/Icons";
+/**
+ * Shared types.
+ *
+ * Table shapes are inferred from the Drizzle schema rather than hand-written. The
+ * previous `Product` type was a manual copy of the `product` table and had already
+ * drifted from it (it carried an optional `rating` the database never had, and a
+ * `quantity` that only ever existed in the cart).
+ */
 
-type Rating = {
-    rate: number;
-    count: number;
-}
+export type {
+  AdminUser,
+  Category,
+  NewCategory,
+  NewOrder,
+  NewOrderItem,
+  NewProduct,
+  Order,
+  OrderItem,
+  ProductImage,
+  ProductRow,
+  ShippingAddress,
+} from '@/db/schema'
 
-export type Product = {
-    id: number;
-    title: string;
-    price: number;
-    description: string;
-    category: string;
-    image: string;
-    rating?: Rating;
-    quantity?: number
-}
+export type { ProductDetail, ProductListItem, SortKey } from '@/lib/catalog'
+export type { CartLine } from '@/hooks/use-cart'
 
+/** A single item in the admin sidebar. */
 export type NavItem = {
-    title: string;
-    href?: string;
-    disabled?: boolean;
-    external?: boolean;
-    icon?: keyof typeof Icons;
-    label?: string;
-    description?: string;
-  }
+  title: string
+  href: string
+  icon: 'dashboard' | 'products' | 'orders' | 'categories' | 'storefront'
+  exact?: boolean
+}

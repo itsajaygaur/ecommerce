@@ -1,40 +1,76 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-// import { Toaster } from "@/components/ui/sonner";
-import { Toaster } from "sonner";
-import NextTopLoader from 'nextjs-toploader';
-import { ThemeProvider } from "@/components/layout/Theme/ThemeProvider";
+import type { Metadata, Viewport } from 'next'
+import { Fraunces, Inter } from 'next/font/google'
+import NextTopLoader from 'nextjs-toploader'
+import { ThemeProvider } from '@/components/theme-provider'
+import { Toaster } from '@/components/ui/sonner'
+import { siteUrl } from '@/lib/env'
+import './globals.css'
 
-const inter = Inter({ subsets: ["latin"] });
+/**
+ * Two faces: a variable serif for display headings and Inter for everything else.
+ * Both are self-hosted by `next/font`, so there is no render-blocking request to
+ * Google and no layout shift when they swap in.
+ */
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-fraunces',
+  display: 'swap',
+  axes: ['SOFT', 'WONK', 'opsz'],
+})
 
 export const metadata: Metadata = {
-  title: "MyKart",
-  description: "A comprehensive ecommerce platform built in Next.js",
-};
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'MyKart — Considered goods, built to last',
+    template: '%s · MyKart',
+  },
+  description:
+    'A small catalog of well-made apparel, bags, footwear and home goods. Chosen for how they wear in, not how they photograph.',
+  applicationName: 'MyKart',
+  openGraph: {
+    type: 'website',
+    siteName: 'MyKart',
+    url: siteUrl,
+    title: 'MyKart — Considered goods, built to last',
+    description:
+      'A small catalog of well-made apparel, bags, footwear and home goods. Chosen for how they wear in, not how they photograph.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MyKart — Considered goods, built to last',
+    description: 'A small catalog of well-made apparel, bags, footwear and home goods.',
+  },
+  robots: { index: true, follow: true },
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fdfcfa' },
+    { media: '(prefers-color-scheme: dark)', color: '#1c1a18' },
+  ],
+}
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className}`}>
-        {/* <Navbar /> */}
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${fraunces.variable}`}>
+      <body>
         <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-
-        <NextTopLoader showSpinner={false} color="#adfa1d" height={2} />
-        {children}
-        <Toaster richColors />
-          </ThemeProvider>
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextTopLoader showSpinner={false} color="var(--accent)" height={2} shadow={false} />
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
-  );
+  )
 }

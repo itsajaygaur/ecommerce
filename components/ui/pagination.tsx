@@ -1,117 +1,134 @@
-import * as React from "react"
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
+import * as React from 'react'
+import Link from 'next/link'
+import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 
-import { cn } from "@/lib/utils"
-import { ButtonProps, buttonVariants } from "@/components/ui/button"
+/**
+ * Paginator with ellipsis.
+ *
+ * The previous implementation rendered one link per page with no truncation, so a
+ * catalog of 400 products produced 40 numbered links in a single row.
+ */
 
-const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
-  <nav
-    role="navigation"
-    aria-label="pagination"
-    className={cn("mx-auto flex w-full justify-center", className)}
-    {...props}
-  />
-)
-Pagination.displayName = "Pagination"
+export type PaginationToken = number | 'ellipsis'
 
-const PaginationContent = React.forwardRef<
-  HTMLUListElement,
-  React.ComponentProps<"ul">
->(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    className={cn("flex flex-row items-center gap-1", className)}
-    {...props}
-  />
-))
-PaginationContent.displayName = "PaginationContent"
+/**
+ * Produces at most `siblings * 2 + 5` tokens: first, last, the current page and its
+ * neighbours, with ellipses standing in for the gaps.
+ */
+export function paginationRange(
+  current: number,
+  pageCount: number,
+  siblings = 1,
+): PaginationToken[] {
+  const totalSlots = siblings * 2 + 5
+  if (pageCount <= totalSlots) {
+    return Array.from({ length: pageCount }, (_, i) => i + 1)
+  }
 
-const PaginationItem = React.forwardRef<
-  HTMLLIElement,
-  React.ComponentProps<"li">
->(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("", className)} {...props} />
-))
-PaginationItem.displayName = "PaginationItem"
+  const left = Math.max(current - siblings, 1)
+  const right = Math.min(current + siblings, pageCount)
+  const showLeftEllipsis = left > 2
+  const showRightEllipsis = right < pageCount - 1
 
-type PaginationLinkProps = {
-  isActive?: boolean
-} & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+  const tokens: PaginationToken[] = [1]
+  if (showLeftEllipsis) tokens.push('ellipsis')
 
-const PaginationLink = ({
+  for (let page = Math.max(left, 2); page <= Math.min(right, pageCount - 1); page += 1) {
+    tokens.push(page)
+  }
+
+  if (showRightEllipsis) tokens.push('ellipsis')
+  tokens.push(pageCount)
+
+  return tokens
+}
+
+export function Pagination({
+  page,
+  pageCount,
+  buildHref,
   className,
-  isActive,
-  size = "icon",
-  ...props
-}: PaginationLinkProps) => (
-  <a
-    aria-current={isActive ? "page" : undefined}
-    className={cn(
-      buttonVariants({
-        variant: isActive ? "outline" : "ghost",
-        size,
-      }),
-      className
-    )}
-    {...props}
-  />
-)
-PaginationLink.displayName = "PaginationLink"
+}: {
+  page: number
+  pageCount: number
+  /** Maps a page number to a URL, so callers keep their other search params. */
+  buildHref: (page: number) => string
+  className?: string
+}) {
+  if (pageCount <= 1) return null
 
-const PaginationPrevious = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to previous page"
-    size="default"
-    className={cn("gap-1 pl-2.5", className)}
-    {...props}
-  >
-    <ChevronLeft className="h-4 w-4" />
-    <span>Previous</span>
-  </PaginationLink>
-)
-PaginationPrevious.displayName = "PaginationPrevious"
+  const tokens = paginationRange(page, pageCount)
+  const linkClass = (active: boolean) =>
+    cn(
+      buttonVariants({ variant: active ? 'default' : 'ghost', size: 'icon-sm' }),
+      'min-w-8',
+      active && 'pointer-events-none',
+    )
 
-const PaginationNext = ({
-  className,
-  ...props
-}: React.ComponentProps<typeof PaginationLink>) => (
-  <PaginationLink
-    aria-label="Go to next page"
-    size="default"
-    className={cn("gap-1 pr-2.5", className)}
-    {...props}
-  >
-    <span>Next</span>
-    <ChevronRight className="h-4 w-4" />
-  </PaginationLink>
-)
-PaginationNext.displayName = "PaginationNext"
+  return (
+    <nav
+      aria-label="Pagination"
+      className={cn('flex items-center justify-center gap-1', className)}
+    >
+      {page > 1 ? (
+        <Link
+          href={buildHref(page - 1)}
+          rel="prev"
+          aria-label="Previous page"
+          className={cn(buttonVariants({ variant: 'ghost', size: 'icon-sm' }))}
+        >
+          <ChevronLeftIcon />
+        </Link>
+      ) : (
+        <span
+          aria-hidden
+          className={cn(buttonVariants({ variant: 'ghost', size: 'icon-sm' }), 'opacity-40')}
+        >
+          <ChevronLeftIcon />
+        </span>
+      )}
 
-const PaginationEllipsis = ({
-  className,
-  ...props
-}: React.ComponentProps<"span">) => (
-  <span
-    aria-hidden
-    className={cn("flex h-9 w-9 items-center justify-center", className)}
-    {...props}
-  >
-    <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">More pages</span>
-  </span>
-)
-PaginationEllipsis.displayName = "PaginationEllipsis"
+      {tokens.map((token, index) =>
+        token === 'ellipsis' ? (
+          <span
+            key={`ellipsis-${index}`}
+            aria-hidden
+            className="text-muted-foreground flex size-8 items-center justify-center"
+          >
+            <MoreHorizontalIcon className="size-4" />
+          </span>
+        ) : (
+          <Link
+            key={token}
+            href={buildHref(token)}
+            aria-label={`Page ${token}`}
+            aria-current={token === page ? 'page' : undefined}
+            className={linkClass(token === page)}
+          >
+            {token}
+          </Link>
+        ),
+      )}
 
-export {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
+      {page < pageCount ? (
+        <Link
+          href={buildHref(page + 1)}
+          rel="next"
+          aria-label="Next page"
+          className={cn(buttonVariants({ variant: 'ghost', size: 'icon-sm' }))}
+        >
+          <ChevronRightIcon />
+        </Link>
+      ) : (
+        <span
+          aria-hidden
+          className={cn(buttonVariants({ variant: 'ghost', size: 'icon-sm' }), 'opacity-40')}
+        >
+          <ChevronRightIcon />
+        </span>
+      )}
+    </nav>
+  )
 }
