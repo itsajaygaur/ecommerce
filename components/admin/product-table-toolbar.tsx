@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SearchIcon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -47,6 +47,7 @@ export function ProductTableToolbar({
 
   const [query, setQuery] = useState(initialQuery)
   const [appliedQuery, setAppliedQuery] = useState(initialQuery)
+  const navigatingAway = useRef(false)
 
   // Adopt the query from the URL during render rather than in an effect. This page
   // is dynamically rendered, so the server already saw the same searchParams and
@@ -66,10 +67,27 @@ export function ProductTableToolbar({
     router.push(`/admin/products?${params.toString()}`)
   }
 
+  // A queued search navigation must not hijack a click the user has already made.
+  // The debounce fires ~300ms after the last keystroke; if someone types and then
+  // clicks a result inside that window, the navigation lands *after* the click and
+  // supersedes it, bouncing them back to the list. Treat a click on any link as
+  // intent to leave, and drop the pending search.
+  useEffect(() => {
+    const onLinkClick = (event: MouseEvent) => {
+      if ((event.target as HTMLElement | null)?.closest('a')) navigatingAway.current = true
+    }
+    document.addEventListener('click', onLinkClick, true)
+    return () => document.removeEventListener('click', onLinkClick, true)
+  }, [])
+
   // Debounced so typing does not fire a request per keystroke.
   useEffect(() => {
     if (query === appliedQuery) return
-    const timer = setTimeout(() => apply({ q: query || null }), 300)
+    navigatingAway.current = false
+    const timer = setTimeout(() => {
+      if (navigatingAway.current) return
+      apply({ q: query || null })
+    }, 300)
     return () => clearTimeout(timer)
     // `apply` closes over searchParams and is recreated each render; depending on
     // it would restart the timer on every keystroke's re-render.

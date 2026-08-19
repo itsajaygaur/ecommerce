@@ -27,6 +27,9 @@ jobs:
   static:
     name: Lint, types and unit tests
     runs-on: ubuntu-latest
+    # Without a timeout a hung step runs to GitHub's 6-hour default, blocking the
+    # PR and burning runner minutes.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -53,6 +56,7 @@ jobs:
     name: Migrations, build and end-to-end
     runs-on: ubuntu-latest
     needs: static
+    timeout-minutes: 25
 
     services:
       postgres:
@@ -89,8 +93,32 @@ jobs:
       - name: Build
         run: npm run build
 
+      # Cached across runs so a green pipeline does not re-download Chromium each
+      # time. Keyed on the resolved Playwright version, so a dependency bump
+      # invalidates it automatically.
+      - name: Resolve Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
       - name: Install Playwright browser
-        run: npx playwright install --with-deps chromium
+        # `--with-deps` shells out to apt-get, which blocks indefinitely on the
+        # dpkg lock the runner's unattended-upgrades service holds — that hung a
+        # run for 38 minutes with no output. Stopping the service first removes
+        # the contention, DEBIAN_FRONTEND stops apt waiting on a prompt, and the
+        # step timeout means a future hang fails in minutes rather than hours.
+        timeout-minutes: 8
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo systemctl stop unattended-upgrades 2>/dev/null || true
+          npx playwright install --with-deps chromium
 
       - name: End-to-end tests
         run: npm run test:e2e

@@ -2,6 +2,7 @@ import 'server-only'
 import { and, asc, count, desc, eq, gte, inArray, lte, ne, sql, type SQL } from 'drizzle-orm'
 import { db } from '@/db'
 import { categories, productImages, products } from '@/db/schema'
+import { tolerateDatabaseFailureAtBuild } from '@/lib/queries/prerender'
 import {
   PAGE_SIZE,
   type CatalogFilters,
@@ -232,6 +233,14 @@ export async function getRelatedProducts(
 }
 
 export async function getFeaturedProducts(limit = 4): Promise<ProductListItem[]> {
+  return tolerateDatabaseFailureAtBuild(
+    () => getFeaturedProductsUncached(limit),
+    [],
+    'getFeaturedProducts',
+  )
+}
+
+async function getFeaturedProductsUncached(limit: number): Promise<ProductListItem[]> {
   const rows = await db
     .select({
       id: products.id,
@@ -256,6 +265,10 @@ export async function getFeaturedProducts(limit = 4): Promise<ProductListItem[]>
 }
 
 export async function listCategories(): Promise<CategorySummary[]> {
+  return tolerateDatabaseFailureAtBuild(listCategoriesUncached, [], 'listCategories')
+}
+
+async function listCategoriesUncached(): Promise<CategorySummary[]> {
   const rows = await db
     .select({
       id: categories.id,
@@ -282,6 +295,10 @@ export async function listCategories(): Promise<CategorySummary[]> {
 
 /** Price bounds across the active catalog, used to seed the price filter. */
 export async function getPriceRange(): Promise<{ min: number; max: number }> {
+  return tolerateDatabaseFailureAtBuild(getPriceRangeUncached, { min: 0, max: 0 }, 'getPriceRange')
+}
+
+async function getPriceRangeUncached(): Promise<{ min: number; max: number }> {
   const [row] = await db
     .select({
       min: sql<number>`cast(coalesce(min(${products.priceCents}), 0) as int)`,

@@ -55,6 +55,7 @@ export function SearchField({ className, autoFocus = false }: SearchFieldProps) 
   // read during render.
   const [selfNavigatedTo, setSelfNavigatedTo] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const navigatingAway = useRef(false)
 
   // Derived-state adjustment during render — the pattern React documents for
   // "reset state when an input changes", and cheaper than an effect because it
@@ -66,10 +67,26 @@ export function SearchField({ className, autoFocus = false }: SearchFieldProps) 
     if (urlQuery !== selfNavigatedTo) setDraft(urlQuery)
   }
 
+  // A queued search navigation must not hijack a click the user has already made.
+  // The debounce fires ~300ms after the last keystroke; if someone types and then
+  // clicks a result inside that window, the navigation lands *after* the click and
+  // supersedes it, bouncing them back to the list. Treat a click on any link as
+  // intent to leave, and drop the pending search.
+  useEffect(() => {
+    const onLinkClick = (event: MouseEvent) => {
+      if ((event.target as HTMLElement | null)?.closest('a')) navigatingAway.current = true
+    }
+    document.addEventListener('click', onLinkClick, true)
+    return () => document.removeEventListener('click', onLinkClick, true)
+  }, [])
+
   useEffect(() => {
     if (draft === appliedQuery) return
+    navigatingAway.current = false
 
     const timer = setTimeout(() => {
+      if (navigatingAway.current) return
+
       const params = new URLSearchParams(window.location.search)
       if (draft.trim()) params.set('q', draft.trim())
       else params.delete('q')
