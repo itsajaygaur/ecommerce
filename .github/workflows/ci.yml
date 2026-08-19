@@ -1,0 +1,147 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # A throwaway database and dummy secrets: nothing here talks to production, and
+  # the app validates that these are present rather than that they are real.
+  DATABASE_URL: postgres://postgres:postgres@localhost:5432/mykart_ci
+  NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3210
+  SESSION_SECRET: ci-session-secret-that-is-long-enough-to-pass-validation
+  STRIPE_SECRET_KEY: sk_test_ci_placeholder
+  STRIPE_WEBHOOK_SECRET: whsec_ci_placeholder
+  SUPABASE_STORAGE_BUCKET: ecommerce
+  ADMIN_EMAIL: admin@mykart.local
+  ADMIN_PASSWORD: admin12345
+
+jobs:
+  # Fast feedback: no database needed, so this fails in under a minute when it fails.
+  static:
+    name: Lint, types and unit tests
+    runs-on: ubuntu-latest
+    # Without a timeout a hung step runs to GitHub's 6-hour default, blocking the
+    # PR and burning runner minutes.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Format check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+  e2e:
+    name: Migrations, build and end-to-end
+    runs-on: ubuntu-latest
+    needs: static
+    timeout-minutes: 25
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mykart_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Exercises the real migration path, including the backfill from the legacy
+      # `product` table, on a database that starts empty.
+      - name: Run migrations
+        run: npm run db:migrate
+
+      - name: Seed catalog and bootstrap admin
+        run: npm run db:seed
+
+      - name: Build
+        run: npm run build
+
+      # Cached across runs so a green pipeline does not re-download Chromium each
+      # time. Keyed on the resolved Playwright version, so a dependency bump
+      # invalidates it automatically.
+      - name: Resolve Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Install Playwright browser
+        # Deliberately NOT `--with-deps`. That flag shells out to `apt-get
+        # update`, which twice stalled on the runner's Ubuntu mirrors — the log
+        # showed repeated `Ign:` retries against azure.archive.ubuntu.com
+        # followed by 7.5 minutes of total silence, hanging the job (38 minutes
+        # on the first run, which had no timeout at all).
+        #
+        # `ubuntu-latest` already ships the shared libraries Chromium needs, so
+        # apt buys nothing here and only adds a dependency on mirror
+        # availability. This downloads the browser bundle from Playwright's CDN
+        # and nothing else.
+        timeout-minutes: 8
+        run: npx playwright install chromium
+
+      - name: Verify Chromium launches
+        # Without `--with-deps` a genuinely missing system library would other-
+        # wise surface as 23 confusing test failures. Launching once here turns
+        # that into one legible error naming the missing library.
+        timeout-minutes: 3
+        run: |
+          node -e "
+            const { chromium } = require('@playwright/test');
+            chromium.launch()
+              .then((b) => b.close())
+              .then(() => console.log('chromium launches OK'))
+              .catch((e) => { console.error(e); process.exit(1); });
+          "
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

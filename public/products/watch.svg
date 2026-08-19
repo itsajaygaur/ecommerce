@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.06"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.045"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="900" height="1200" fill="#e9e5dd"/>
+  <rect width="900" height="1200" fill="url(#g)"/>
+
+  <ellipse cx="450" cy="960" rx="250" ry="46" fill="#000" opacity="0.16" filter="url(#soft)"/>
+
+  
+    <rect x="395" y="270" width="110" height="230" rx="26" fill="#2b3238"/>
+    <rect x="395" y="700" width="110" height="230" rx="26" fill="#2b3238"/>
+    <circle cx="450" cy="600" r="165" fill="#3f4750"/>
+    <circle cx="450" cy="600" r="128" fill="#2b3238" opacity="0.5"/>
+    <g stroke="#e5e2dc" stroke-width="6" stroke-linecap="round">
+      <path d="M450 510 L450 540 M540 600 L510 600 M450 690 L450 660 M360 600 L390 600"/>
+      <path d="M450 600 L450 522 M450 600 L508 640"/>
+    </g>
+    <rect x="612" y="576" width="26" height="48" rx="8" fill="#2b3238"/>
+
+  <rect width="900" height="1200" filter="url(#grain)" opacity="0.55"/>
+</svg>

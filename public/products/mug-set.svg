@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.06"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.045"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="900" height="1200" fill="#efe8dd"/>
+  <rect width="900" height="1200" fill="url(#g)"/>
+
+  <ellipse cx="450" cy="960" rx="250" ry="46" fill="#000" opacity="0.16" filter="url(#soft)"/>
+
+  
+    <path d="M300 540 L640 540 L610 810 Q470 830 330 810 Z" fill="#d9cfbe"/>
+    <ellipse cx="470" cy="540" rx="170" ry="42" fill="#bdb09a"/>
+    <path d="M640 590 Q730 620 700 700 Q690 740 620 750" fill="none" stroke="#d9cfbe" stroke-width="28"/>
+    <ellipse cx="470" cy="540" rx="120" ry="28" fill="none" stroke="#6f6555" stroke-width="4" opacity="0.4"/>
+
+  <rect width="900" height="1200" filter="url(#grain)" opacity="0.55"/>
+</svg>
