@@ -64,8 +64,16 @@ $$ LANGUAGE sql IMMUTABLE;
 -- Products: rename the table, then widen it.
 -- ---------------------------------------------------------------------------
 DO $$ BEGIN
-  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'product')
-     AND NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'products') THEN
+  -- Schema-qualified: a managed Postgres has many schemas, and an unqualified
+  -- lookup would match a same-named table in any of them.
+  IF EXISTS (
+       SELECT 1 FROM information_schema.tables
+       WHERE table_schema = 'public' AND table_name = 'product'
+     )
+     AND NOT EXISTS (
+       SELECT 1 FROM information_schema.tables
+       WHERE table_schema = 'public' AND table_name = 'products'
+     ) THEN
     ALTER TABLE "product" RENAME TO "products";
     -- Keep the sequence name aligned with the new table name.
     ALTER SEQUENCE IF EXISTS "product_id_seq" RENAME TO "products_id_seq";
@@ -94,7 +102,7 @@ UPDATE "products" SET "price_cents" = "price" * 100
 WHERE "price_cents" IS NULL
   AND EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'products' AND column_name = 'price'
+    WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'price'
   );
 
 -- Any row without a legacy price (fresh install) gets a safe zero rather than NULL.
@@ -124,7 +132,7 @@ UPDATE "products" SET "stock" = 25 WHERE "stock" = 0;
 DO $$ BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'products' AND column_name = 'category'
+    WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'category'
   ) THEN
     -- Legacy data spells the same category several ways ("Men's Clothing" vs
     -- "men's clothing"), all of which slugify identically. Collapse them onto one
@@ -186,7 +194,7 @@ CREATE INDEX IF NOT EXISTS "product_images_product_id_position_idx"
 DO $$ BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_name = 'products' AND column_name = 'image'
+    WHERE table_schema = 'public' AND table_name = 'products' AND column_name = 'image'
   ) THEN
     INSERT INTO "product_images" ("product_id", "path", "alt", "position")
     SELECT p."id", p."image", p."title", 0

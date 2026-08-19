@@ -20,7 +20,8 @@
     "db:migrate": "tsx db/migrate.ts",
     "db:seed": "tsx db/seed.ts",
     "db:studio": "drizzle-kit studio",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "db:admin": "tsx db/admin.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

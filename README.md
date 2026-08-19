@@ -41,6 +41,20 @@ the seeded catalog uses local placeholder artwork under `public/products`.
 | `NEXT_PUBLIC_SUPABASE_STORAGE_URL` | for uploads  | Public object base URL. Its hostname is what `next/image` is allowed to optimise.                              |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD`    | first run    | Read once by `db:seed` to create the initial admin. Not used at runtime afterwards.                            |
 
+### Administrators
+
+Credentials live in `admin_users` as scrypt hashes, so they cannot be changed with a plain
+SQL `UPDATE` — the hash has to be derived. Use the script:
+
+```bash
+npm run db:admin -- you@example.com                  # generates a password and prints it
+npm run db:admin -- you@example.com "a password"     # sets a specific one
+npm run db:admin -- colleague@example.com --role staff
+```
+
+Re-running it for an existing address resets that account's password and clears any
+sign-in throttle.
+
 ### Stripe webhook
 
 Orders are written by the webhook, so register an endpoint for
@@ -69,6 +83,7 @@ order is ever created.
 | `npm run test:e2e`                        | Playwright end-to-end tests (needs a built app and a seeded database). |
 | `npm run db:migrate`                      | Apply SQL migrations in `drizzle/`.                                    |
 | `npm run db:seed`                         | Seed the catalog and bootstrap the first admin.                        |
+| `npm run db:admin`                        | Create an administrator, or reset one's password.                      |
 | `npm run db:generate`                     | Drizzle Kit schema diff, for authoring new migrations.                 |
 | `npm run db:studio`                       | Drizzle Studio.                                                        |
 
@@ -145,6 +160,13 @@ The checkout and admin paths are the parts worth reading closely:
 - **Sign-in is throttled** per email address, with an identical message for unknown
   accounts and wrong passwords.
 - Security headers are set in `next.config.ts`; `x-powered-by` is off.
+- **Row Level Security is enabled on every table, with no policies.** On Supabase this
+  matters: every table in `public` is otherwise exposed over PostgREST and pg_graphql to
+  the `anon` role, whose key is public by design — which would have made `admin_users`
+  (password hashes) and `orders` (names, emails, postal addresses) readable by anyone.
+  The app is unaffected because it connects directly over `DATABASE_URL` as a role with
+  `BYPASSRLS`, and reaches Storage with the service-role key. `SELECT` is also revoked
+  from `anon`/`authenticated` so the tables are not even discoverable.
 
 ---
 
