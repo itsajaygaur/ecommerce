@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Pagination } from '@/components/ui/pagination'
 import {
   ActiveFilterChips,
-  CatalogFilters,
+  CatalogFilterSheet,
+  CatalogFilterSidebar,
   CatalogToolbar,
 } from '@/components/storefront/catalog-filters'
 import { ProductCard, ProductCardSkeleton } from '@/components/storefront/product-card'
@@ -46,6 +47,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
 
   const [categories, priceRange] = await Promise.all([listCategories(), getPriceRange()])
   const currency = 'INR'
+  const total = categories.reduce((sum, category) => sum + category.productCount, 0)
 
   const filters = {
     query,
@@ -67,16 +69,22 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         </h1>
       </header>
 
-      <div className="flex gap-10">
-        <CatalogFilters
+      <div className="lg:flex lg:gap-10">
+        <CatalogFilterSidebar
           categories={categories}
           priceRange={priceRange}
           currency={currency}
-          total={0}
+          total={total}
         />
 
         <div className="min-w-0 flex-1 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <CatalogFilterSheet
+              categories={categories}
+              priceRange={priceRange}
+              currency={currency}
+              total={total}
+            />
             <ActiveFilterChips categories={categories} currency={currency} />
           </div>
 

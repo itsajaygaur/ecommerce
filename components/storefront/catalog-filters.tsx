@@ -64,7 +64,7 @@ export function CatalogToolbar({ total, sort }: { total: number; sort: SortKey }
   const { update } = useFilterParams()
 
   return (
-    <div className="flex items-center justify-between gap-4">
+    <div className="flex flex-wrap items-center justify-between gap-3">
       <p className="text-muted-foreground text-sm" aria-live="polite">
         {total} {total === 1 ? 'product' : 'products'}
       </p>
@@ -77,7 +77,7 @@ export function CatalogToolbar({ total, sort }: { total: number; sort: SortKey }
           value={sort}
           onValueChange={(value) => update({ sort: value === 'relevance' ? null : value })}
         >
-          <SelectTrigger id="sort" size="sm" className="w-44">
+          <SelectTrigger id="sort" size="sm" className="w-40 sm:w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent align="end">
@@ -93,42 +93,38 @@ export function CatalogToolbar({ total, sort }: { total: number; sort: SortKey }
   )
 }
 
-export function CatalogFilters({ categories, priceRange, currency, total }: Props) {
+/** Always-visible sidebar, desktop only. */
+export function CatalogFilterSidebar(props: Props) {
   return (
-    <>
-      {/* Desktop: always-visible sidebar */}
-      <aside className="hidden w-56 shrink-0 lg:block" aria-label="Filters">
-        <FilterControls
-          categories={categories}
-          priceRange={priceRange}
-          currency={currency}
-          total={total}
-        />
-      </aside>
+    <aside className="hidden w-56 shrink-0 lg:block" aria-label="Filters">
+      <FilterControls {...props} />
+    </aside>
+  )
+}
 
-      {/* Mobile: filters in a sheet, so they do not push results below the fold */}
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="sm" className="lg:hidden">
-            <SlidersHorizontalIcon />
-            Filters
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-80 overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Filters</SheetTitle>
-          </SheetHeader>
-          <div className="px-6 pb-6">
-            <FilterControls
-              categories={categories}
-              priceRange={priceRange}
-              currency={currency}
-              total={total}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
-    </>
+/**
+ * Mobile filter trigger. Rendered inside the toolbar row rather than as a sibling
+ * of the results grid — as a flex sibling it claimed a column of its own and
+ * squeezed the product grid off the side of the screen.
+ */
+export function CatalogFilterSheet(props: Props) {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline" size="sm" className="lg:hidden">
+          <SlidersHorizontalIcon />
+          Filters
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-80 overflow-y-auto">
+        <SheetHeader>
+          <SheetTitle>Filters</SheetTitle>
+        </SheetHeader>
+        <div className="px-6 pb-6">
+          <FilterControls {...props} />
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }
 
