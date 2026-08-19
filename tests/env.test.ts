@@ -19,11 +19,23 @@ async function freshEnvModule() {
   return import('@/lib/env')
 }
 
+// Every variable any case here reads, cleared before each one. These tests are about
+// what happens when a name is *absent*, so they must not inherit an ambient value —
+// CI sets `STRIPE_WEBHOOK_SECRET` in the job environment, which a local run does not.
+const MANAGED_KEYS = [
+  'DATABASE_URL',
+  'DB_URL',
+  'SESSION_SECRET',
+  'JWT_SECRET',
+  'STRIPE_WEBHOOK_SECRET',
+  'STRIPE_WEBHOOK',
+  'SUPABASE_SERVICE_ROLE_KEY',
+  'SUPABASE_ANON_KEY',
+]
+
 beforeEach(() => {
   vi.spyOn(console, 'warn').mockImplementation(() => {})
-  for (const key of ['DATABASE_URL', 'DB_URL', 'SESSION_SECRET', 'JWT_SECRET']) {
-    delete process.env[key]
-  }
+  for (const key of MANAGED_KEYS) delete process.env[key]
 })
 
 afterEach(() => {
@@ -59,9 +71,22 @@ describe('readEnv', () => {
     expect(readEnv('DATABASE_URL')).toBeUndefined()
   })
 
-  it('does not invent aliases for unrelated variables', async () => {
+  it('aliases only the two mapped names, not anything legacy-looking', async () => {
+    // A plausible old name for a variable that has no alias. Nothing should infer a
+    // mapping from resemblance — only the explicit table is honoured.
+    process.env.STRIPE_WEBHOOK = 'whsec_legacy_shaped'
     const { readEnv } = await freshEnvModule()
+
     expect(readEnv('STRIPE_WEBHOOK_SECRET')).toBeUndefined()
+  })
+
+  it('does not alias SUPABASE_ANON_KEY to the service role key', async () => {
+    // Deliberately not aliased: different privileges, and the anon key cannot write
+    // to Storage. Aliasing it would look like it worked and then fail on upload.
+    process.env.SUPABASE_ANON_KEY = 'anon-key'
+    const { readEnv } = await freshEnvModule()
+
+    expect(readEnv('SUPABASE_SERVICE_ROLE_KEY')).toBeUndefined()
   })
 
   it('warns once per aliased variable rather than on every read', async () => {
