@@ -108,17 +108,32 @@ jobs:
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
 
       - name: Install Playwright browser
-        # `--with-deps` shells out to apt-get, which blocks indefinitely on the
-        # dpkg lock the runner's unattended-upgrades service holds — that hung a
-        # run for 38 minutes with no output. Stopping the service first removes
-        # the contention, DEBIAN_FRONTEND stops apt waiting on a prompt, and the
-        # step timeout means a future hang fails in minutes rather than hours.
+        # Deliberately NOT `--with-deps`. That flag shells out to `apt-get
+        # update`, which twice stalled on the runner's Ubuntu mirrors — the log
+        # showed repeated `Ign:` retries against azure.archive.ubuntu.com
+        # followed by 7.5 minutes of total silence, hanging the job (38 minutes
+        # on the first run, which had no timeout at all).
+        #
+        # `ubuntu-latest` already ships the shared libraries Chromium needs, so
+        # apt buys nothing here and only adds a dependency on mirror
+        # availability. This downloads the browser bundle from Playwright's CDN
+        # and nothing else.
         timeout-minutes: 8
-        env:
-          DEBIAN_FRONTEND: noninteractive
+        run: npx playwright install chromium
+
+      - name: Verify Chromium launches
+        # Without `--with-deps` a genuinely missing system library would other-
+        # wise surface as 23 confusing test failures. Launching once here turns
+        # that into one legible error naming the missing library.
+        timeout-minutes: 3
         run: |
-          sudo systemctl stop unattended-upgrades 2>/dev/null || true
-          npx playwright install --with-deps chromium
+          node -e "
+            const { chromium } = require('@playwright/test');
+            chromium.launch()
+              .then((b) => b.close())
+              .then(() => console.log('chromium launches OK'))
+              .catch((e) => { console.error(e); process.exit(1); });
+          "
 
       - name: End-to-end tests
         run: npm run test:e2e
