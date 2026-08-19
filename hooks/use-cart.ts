@@ -104,6 +104,10 @@ export const useCart = create<CartState>()(
       clear: () => set({ lines: [] }),
     }),
     {
+      // Storage key, not a brand name. The store was renamed to PATINA but this
+      // stays: renaming it orphans the localStorage entry of every shopper with
+      // a bag in progress, and zustand's `migrate` cannot help because it only
+      // runs for a key that is actually found.
       name: 'mykart.cart',
       version: 2,
       storage: createJSONStorage(() => localStorage),

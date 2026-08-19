@@ -1,10 +1,55 @@
-# MyKart
+# PATINA
 
 A small, production-minded e-commerce platform: a storefront with server-side search and
 filtering, Stripe Checkout with server-authoritative pricing, recorded orders, and a back
 office that reports on real data.
 
 Built with Next.js 16 (App Router), React 19, Tailwind CSS v4, Drizzle ORM and PostgreSQL.
+
+---
+
+## Design system — "Ink & Signal"
+
+The whole visual language lives in `app/globals.css`. Three rules decide every component:
+
+1. **Structure comes from 1px hairline rules** — never from fills, radii or shadows. A
+   "card" is a ruled cell. The only elevation in the system belongs to floating overlays
+   (dialog, sheet, menu, toast), and the small `shadow-*` steps are remapped to `none` at
+   the token layer so a stray one is inert by construction.
+2. **Colour is a signal, not a surface.** Every neutral is zero chroma. The one hue —
+   electric cobalt, `--signal` — is reserved for price, the primary action, focus rings and
+   inline links. It is never a background or a border.
+3. **Hierarchy comes from width and scale.** Archivo is loaded with its `wdth` axis, so
+   headings are _widened_ (112–122%) rather than merely bolded; everything structural is an
+   11px wide-tracked uppercase mono micro-label (`.eyebrow`).
+
+Two conventions worth knowing before editing:
+
+- **`.on-ink`** re-derives the token set for inverted bands. The light-mode signal is only
+  2.95:1 on near-black, so a band lifts it to a passing value rather than banning colour
+  from dark surfaces. In dark mode the same class becomes a _raised_ panel, because a
+  literal inversion would be a glaring white slab.
+- **Never apply `uppercase` to an interactive element.** Chromium computes accessible names
+  from rendered text, so a CSS-uppercased button renames itself for screen readers — and for
+  every `getByRole('button', { name })` assertion in `e2e/`. Caps belong on non-interactive
+  micro-labels only.
+
+The brand palette is duplicated as literal hexes in exactly two places that cannot read CSS
+variables — `viewport.themeColor` in `app/layout.tsx` and `app/opengraph-image.tsx` (Satori
+does not resolve `var()`). Move them together with the tokens.
+
+### The rebrand and what it deliberately did not touch
+
+The store was renamed from MyKart to PATINA. Brand surfaces changed; wire identifiers did
+not, because renaming them breaks a running deployment:
+
+| Identifier                        | Where                                           | Why it keeps the old name                                                                          |
+| --------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `_mykart_migrations`              | `db/migrate.ts`                                 | The ledger would read as empty and every migration would re-run against a populated database.      |
+| `mykart_slugify`                  | `drizzle/0001_platform.sql`                     | An applied migration. Renaming it in the file would make the repo disagree with the live database. |
+| `mykart_session`, issuer/audience | `lib/auth/session.ts`                           | Verified JWT claims and the cookie name a signed-in admin's browser already holds.                 |
+| `mykart.cart`                     | `hooks/use-cart.ts`                             | The localStorage key. A rename silently empties every shopper's bag.                               |
+| `mykart_ci`, `admin@mykart.local` | `.github/workflows/ci.yml`, `e2e/admin.spec.ts` | Paired CI values; changing one without the other turns the e2e job red.                            |
 
 ---
 

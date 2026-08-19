@@ -6,13 +6,18 @@ export async function SiteFooter() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="mt-24 border-t">
+    <footer className="border-t">
       <div className="container-page grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="space-y-3">
-          <p className="font-display text-xl font-semibold tracking-tight">MyKart</p>
-          <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
-            A small, deliberately short catalog. Everything here is chosen for how it wears in
-            rather than how it photographs.
+          <p
+            className="font-display text-[1.375rem] leading-none font-semibold tracking-[0.14em]"
+            style={{ fontStretch: '122%' }}
+          >
+            PATINA
+          </p>
+          <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+            A deliberately short catalogue. Everything here is chosen for how it wears in rather
+            than how it photographs.
           </p>
         </div>
 
@@ -24,7 +29,7 @@ export async function SiteFooter() {
             <li>
               <Link
                 href="/products"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground transition-colors hover:text-foreground"
               >
                 All products
               </Link>
@@ -33,7 +38,7 @@ export async function SiteFooter() {
               <li key={category.id}>
                 <Link
                   href={`/products?category=${category.slug}`}
-                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-muted-foreground transition-colors hover:text-foreground"
                 >
                   {category.name}
                 </Link>
@@ -46,7 +51,7 @@ export async function SiteFooter() {
           <h2 id="footer-help" className="eyebrow mb-4">
             Help
           </h2>
-          <ul className="text-muted-foreground space-y-2.5 text-sm">
+          <ul className="space-y-2.5 text-sm text-muted-foreground">
             <li>Shipping &amp; returns</li>
             <li>Size guide</li>
             <li>Care instructions</li>
@@ -56,7 +61,7 @@ export async function SiteFooter() {
 
         <div>
           <h2 className="eyebrow mb-4">Details</h2>
-          <ul className="text-muted-foreground space-y-2.5 text-sm">
+          <ul className="space-y-2.5 text-sm text-muted-foreground">
             <li>Free shipping over ₹2,000</li>
             <li>30-day returns</li>
             <li>Secure payments by Stripe</li>
@@ -65,8 +70,8 @@ export async function SiteFooter() {
       </div>
 
       <div className="border-t">
-        <div className="container-page text-muted-foreground flex flex-col gap-2 py-6 text-xs sm:flex-row sm:items-center sm:justify-between">
-          <p>© {year} MyKart. All rights reserved.</p>
+        <div className="container-page flex flex-col gap-2 py-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>© {year} PATINA. All rights reserved.</p>
           <p>Prices include applicable taxes.</p>
         </div>
       </div>

@@ -5,97 +5,195 @@
 
 /*
  * ---------------------------------------------------------------------------
- * MyKart design tokens
+ * PATINA design tokens — "Ink & Signal"
  * ---------------------------------------------------------------------------
- * The previous theme was stock shadcn zinc with `--radius: 0`, which flattened
- * every surface and made the storefront read as a wireframe. This palette is
- * warm-neutral (a paper-like light mode, a soft-charcoal dark mode) with a
- * single saturated accent used sparingly for price, calls to action and focus.
- * Colours are oklch so that lightness steps stay perceptually even.
+ * Editorial Swiss retail. Three rules decide every component:
+ *
+ *   1. Structure comes from 1px hairline rules — never from fills, radii or
+ *      shadows. A "card" is a ruled cell. The only elevation in the system
+ *      belongs to floating overlays (dialog, sheet, menu, toast).
+ *   2. Colour is a signal, not a surface. Every neutral is ZERO CHROMA; the
+ *      one hue — electric cobalt — is reserved for price, the primary action,
+ *      focus rings and inline links. It is never a background or a border.
+ *   3. Hierarchy comes from width and scale, not from stacking weights.
+ *      Display type is Archivo widened on its `wdth` axis with negative
+ *      tracking; everything structural is an 11px uppercase mono micro-label.
+ *
+ * Colours are oklch so lightness steps stay perceptually even. Contrast was
+ * checked pairwise: signal/paper 6.7:1, muted-foreground/paper 5.5:1,
+ * signal/ink-surface 5.5:1 in dark.
  */
 
 :root {
-  --radius: 0.75rem;
+  /* Near-square. Media and cells are flat 0; only controls get the 2px. */
+  --radius: 0.125rem;
 
-  /* Surfaces */
-  --background: oklch(0.995 0.003 90);
-  --foreground: oklch(0.21 0.012 60);
+  /* Surfaces — pure paper, no warmth anywhere. */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: var(--foreground);
   --popover: oklch(1 0 0);
   --popover-foreground: var(--foreground);
 
-  /* Ink-dark primary for buttons; the accent carries the colour instead. */
-  --primary: oklch(0.24 0.014 60);
-  --primary-foreground: oklch(0.985 0.003 90);
+  /* Ink primary. The signal carries colour; buttons carry weight. */
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(1 0 0);
 
-  --secondary: oklch(0.96 0.006 85);
-  --secondary-foreground: oklch(0.28 0.012 60);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.145 0 0);
 
-  --muted: oklch(0.965 0.005 85);
-  --muted-foreground: oklch(0.53 0.011 65);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.52 0 0);
 
-  /* Terracotta accent — warm enough to sit on paper without vibrating. */
-  --accent: oklch(0.63 0.16 38);
-  --accent-foreground: oklch(0.99 0.005 90);
-  --accent-subtle: oklch(0.95 0.03 45);
+  /*
+   * `accent` keeps its shadcn meaning — the hover/active *surface* used by
+   * menus, selects and list rows. It is deliberately colourless. The brand
+   * colour lives in `--signal` below and is applied by hand, never by a
+   * primitive's default state.
+   */
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.145 0 0);
 
-  --destructive: oklch(0.58 0.21 27);
-  --destructive-foreground: oklch(0.985 0.003 90);
-  --success: oklch(0.6 0.13 155);
-  --success-foreground: oklch(0.985 0.003 90);
-  --warning: oklch(0.75 0.15 75);
-  --warning-foreground: oklch(0.24 0.014 60);
+  /* Electric cobalt #1F3BFF — the one colour in the system. */
+  --signal: oklch(0.5 0.281 266);
+  --signal-foreground: oklch(1 0 0);
 
-  --border: oklch(0.9 0.006 80);
-  --input: oklch(0.9 0.006 80);
-  --ring: oklch(0.63 0.16 38);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(1 0 0);
+  --success: oklch(0.52 0.14 155);
+  --success-foreground: oklch(1 0 0);
+  --warning: oklch(0.62 0.15 70);
+  --warning-foreground: oklch(1 0 0);
 
-  /* Chart ramp — analogous to the accent so admin charts feel part of the brand. */
-  --chart-1: oklch(0.63 0.16 38);
-  --chart-2: oklch(0.68 0.11 75);
-  --chart-3: oklch(0.55 0.09 200);
-  --chart-4: oklch(0.6 0.12 300);
-  --chart-5: oklch(0.65 0.13 145);
+  /* The hairline, and a heavier rule for section and table divisions. */
+  --border: oklch(0.91 0 0);
+  --border-strong: oklch(0.82 0 0);
+  --input: oklch(0.85 0 0);
+  --ring: var(--signal);
+
+  /* Modal scrim. Replaces the stock `bg-black/50`. */
+  --overlay: oklch(0.145 0 0 / 0.55);
+
+  /* The only elevation in the system. Overlays only. */
+  --elevation: 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 28px oklch(0 0 0 / 0.1);
+
+  /* Admin charts obey the one-colour rule: signal, then a neutral ink ramp. */
+  --chart-1: oklch(0.5 0.281 266);
+  --chart-2: oklch(0.28 0 0);
+  --chart-3: oklch(0.46 0 0);
+  --chart-4: oklch(0.64 0 0);
+  --chart-5: oklch(0.82 0 0);
 }
 
 .dark {
-  --background: oklch(0.17 0.008 65);
-  --foreground: oklch(0.94 0.005 85);
-  --card: oklch(0.21 0.009 65);
+  --background: oklch(0.15 0 0);
+  --foreground: oklch(0.96 0 0);
+  --card: oklch(0.15 0 0);
   --card-foreground: var(--foreground);
-  --popover: oklch(0.21 0.009 65);
+  --popover: oklch(0.19 0 0);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.94 0.005 85);
-  --primary-foreground: oklch(0.19 0.009 65);
+  --primary: oklch(0.96 0 0);
+  --primary-foreground: oklch(0.15 0 0);
 
-  --secondary: oklch(0.26 0.01 65);
-  --secondary-foreground: oklch(0.94 0.005 85);
+  --secondary: oklch(0.21 0 0);
+  --secondary-foreground: oklch(0.96 0 0);
 
-  --muted: oklch(0.26 0.01 65);
-  --muted-foreground: oklch(0.68 0.01 70);
+  --muted: oklch(0.21 0 0);
+  --muted-foreground: oklch(0.66 0 0);
 
-  --accent: oklch(0.7 0.15 42);
-  --accent-foreground: oklch(0.17 0.008 65);
-  --accent-subtle: oklch(0.3 0.05 42);
+  --accent: oklch(0.24 0 0);
+  --accent-foreground: oklch(0.96 0 0);
 
-  --destructive: oklch(0.65 0.19 27);
-  --destructive-foreground: oklch(0.98 0.003 90);
-  --success: oklch(0.68 0.13 155);
-  --success-foreground: oklch(0.17 0.008 65);
-  --warning: oklch(0.8 0.14 75);
-  --warning-foreground: oklch(0.19 0.009 65);
+  /*
+   * Lifted and desaturated so it holds 5.5:1 on near-black, and dark enough
+   * that INK sits on it legibly — in dark mode the signal button is a bright
+   * chip with dark type, not white-on-blue.
+   */
+  --signal: oklch(0.64 0.21 268);
+  --signal-foreground: oklch(0.15 0 0);
 
-  --border: oklch(0.3 0.008 65);
-  --input: oklch(0.32 0.008 65);
-  --ring: oklch(0.7 0.15 42);
+  --destructive: oklch(0.66 0.2 25);
+  --destructive-foreground: oklch(0.15 0 0);
+  --success: oklch(0.7 0.15 155);
+  --success-foreground: oklch(0.15 0 0);
+  --warning: oklch(0.78 0.15 75);
+  --warning-foreground: oklch(0.15 0 0);
 
-  --chart-1: oklch(0.7 0.15 42);
-  --chart-2: oklch(0.75 0.11 75);
-  --chart-3: oklch(0.65 0.1 200);
-  --chart-4: oklch(0.68 0.12 300);
-  --chart-5: oklch(0.72 0.13 145);
+  --border: oklch(0.27 0 0);
+  --border-strong: oklch(0.38 0 0);
+  --input: oklch(0.32 0 0);
+  --ring: var(--signal);
+
+  --overlay: oklch(0 0 0 / 0.7);
+  --elevation: 0 1px 2px oklch(0 0 0 / 0.5), 0 8px 28px oklch(0 0 0 / 0.55);
+
+  --chart-1: oklch(0.64 0.21 268);
+  --chart-2: oklch(0.86 0 0);
+  --chart-3: oklch(0.68 0 0);
+  --chart-4: oklch(0.5 0 0);
+  --chart-5: oklch(0.34 0 0);
+}
+
+/*
+ * Ink bands — the inverted sections (announcement bar, CTA panel, hover bars).
+ *
+ * The light-mode signal is 2.95:1 on ink, which fails. Rather than banning the
+ * signal from dark surfaces, a band re-derives the whole token set for anything
+ * inside it: the signal lifts to the same value dark mode uses (5.5:1 on ink),
+ * and background/foreground/border invert. Any primitive dropped inside an
+ * `.on-ink` element is then correct without a single `dark:`-style override.
+ */
+.on-ink {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.24 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.24 0 0);
+  --muted-foreground: oklch(0.72 0 0);
+  --accent: oklch(0.24 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --signal: oklch(0.66 0.19 268);
+  --signal-foreground: oklch(0.145 0 0);
+  --border: oklch(0.3 0 0);
+  --border-strong: oklch(0.42 0 0);
+  --input: oklch(0.34 0 0);
+  --ring: oklch(0.66 0.19 268);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/*
+ * In dark mode an ink band would be the same near-black as the page, so the
+ * section would simply disappear. It becomes a *raised* panel instead: lifted
+ * one step and fenced by strong rules, so it keeps its structural role through
+ * weight rather than luminance. A literal inversion — a white slab — would be
+ * far louder here than the band ever is in light mode.
+ */
+.dark .on-ink {
+  --background: oklch(0.21 0 0);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.21 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.97 0 0);
+  --primary-foreground: oklch(0.21 0 0);
+  --secondary: oklch(0.28 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.28 0 0);
+  --muted-foreground: oklch(0.72 0 0);
+  --accent: oklch(0.28 0 0);
+  --accent-foreground: oklch(0.97 0 0);
+  --border: oklch(0.34 0 0);
+  --border-strong: oklch(0.46 0 0);
+  --input: oklch(0.38 0 0);
+
+  border-block: 1px solid var(--border-strong);
 }
 
 @theme inline {
@@ -113,7 +211,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-accent-subtle: var(--accent-subtle);
+  --color-signal: var(--signal);
+  --color-signal-foreground: var(--signal-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -121,8 +220,10 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -130,20 +231,71 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  /*
+   * One family. Display is separated from body by WIDTH and tracking, not by
+   * a second personality — `--font-display` intentionally resolves to the same
+   * face as `--font-sans` so the two never fight.
+   */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  /*
+   * Display scale. Tracking is bound to SIZE, which is the whole point — a
+   * blanket `tracking-tight` would apply −0.03em to a 14px card heading, where
+   * correct optical tracking is ~0. Width rises with size too, so the biggest
+   * type is also the widest.
+   */
+  --text-display-1: clamp(2.75rem, 7vw, 5.5rem);
+  --text-display-1--line-height: 0.94;
+  --text-display-1--letter-spacing: -0.04em;
+
+  --text-display-2: clamp(2rem, 3.6vw, 3rem);
+  --text-display-2--line-height: 1;
+  --text-display-2--letter-spacing: -0.032em;
+
+  --text-display-3: clamp(1.5rem, 2.4vw, 2rem);
+  --text-display-3--line-height: 1.06;
+  --text-display-3--letter-spacing: -0.026em;
+
+  --text-display-4: 1.25rem;
+  --text-display-4--line-height: 1.2;
+  --text-display-4--letter-spacing: -0.016em;
+
+  /* The 11px wide-tracked micro-label. */
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1;
+  --text-micro--letter-spacing: 0.16em;
+
+  /* Controls take the 2px; cells, media and panels stay flat. */
+  --radius-sm: 0px;
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 12px);
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+
+  /*
+   * Elevation is remapped at the token layer rather than deleted class by
+   * class: the small steps flatten to nothing, and the two large steps — the
+   * only ones used by floating overlays — become the single system shadow.
+   * A stray `shadow-sm` anywhere in the app is therefore inert by construction.
+   */
+  --shadow-2xs: none;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: var(--elevation);
+  --shadow-xl: var(--elevation);
+  --shadow-2xl: var(--elevation);
+  --shadow-overlay: var(--elevation);
 
   /* Product media is shot 3:4; locking the ratio stops grid reflow on load. */
   --aspect-product: 3 / 4;
 
+  /* The 96px vertical rhythm the whole storefront is set on. */
+  --spacing-section: 6rem;
+
   --animate-fade-up: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-marquee: marquee 40s linear infinite;
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 }
@@ -169,20 +321,11 @@
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(0.75rem);
+    transform: translateY(0.5rem);
   }
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
   }
 }
 
@@ -198,24 +341,41 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background font-sans text-foreground antialiased;
     text-rendering: optimizeLegibility;
   }
 
-  /* One consistent, always-visible focus treatment across every interactive element. */
-  :focus-visible {
-    @apply outline-ring outline-2 outline-offset-2;
-  }
-
+  /*
+   * The display treatment. Archivo is loaded with its `wdth` axis, so headings
+   * are widened rather than merely bolded — that width, plus the negative
+   * tracking and near-solid leading, is what makes the page read editorial
+   * instead of generic. Sizes still come from Tailwind at the call site.
+   */
   h1,
   h2,
   h3 {
-    @apply font-display tracking-tight;
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
     text-wrap: balance;
   }
 
   p {
     text-wrap: pretty;
+  }
+
+  /* Money and quantities never jitter between renders. */
+  table,
+  time,
+  [data-slot='price'] {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* One consistent, always-visible focus treatment on every interactive element. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -234,14 +394,46 @@
 }
 
 @layer components {
-  /* Shared page gutter. Previously every page invented its own `max-w-[95%]`. */
+  /* Shared page gutter. */
   .container-page {
-    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-[110rem] px-5 sm:px-8 lg:px-12;
   }
 
-  /* Small caps label used for eyebrows and section kickers. */
+  /*
+   * The micro-label. Mono, 11px, wide-tracked, uppercase — this carries every
+   * kicker, category tag, table head and metadata line in the system, and is
+   * the counterweight that lets the display type run as large as it does.
+   */
   .eyebrow {
-    @apply text-muted-foreground text-xs font-medium tracking-[0.18em] uppercase;
+    @apply font-mono text-micro font-medium text-muted-foreground uppercase;
+  }
+
+  /* Same metrics, full ink — for labels that are content rather than chrome. */
+  .eyebrow-strong {
+    @apply font-mono text-micro font-medium text-foreground uppercase;
+  }
+
+  /*
+   * The hero headline: widened past the h1 default and set solid. Uppercase is
+   * deliberately NOT applied to any interactive element anywhere in this file —
+   * Chromium computes accessible names from rendered text, so a CSS-uppercased
+   * button would rename itself out from under the test suite and under anyone
+   * using a screen reader with a spoken label they expect. Caps are reserved
+   * for non-interactive micro-labels.
+   */
+  .display-hero {
+    @apply text-display-1;
+    font-stretch: 122%;
+  }
+
+  /* Price. Cobalt, tabular, never bolder than medium. */
+  .price {
+    @apply font-medium text-signal tabular-nums;
+  }
+
+  /* A hairline divider that does not need a hand-rolled border utility. */
+  .rule {
+    @apply border-t border-border;
   }
 }
 

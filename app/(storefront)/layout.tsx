@@ -7,7 +7,7 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
       {/* Skip link — the previous storefront had no keyboard bypass for the header. */}
       <a
         href="#main"
-        className="bg-background focus:ring-ring sr-only rounded-md px-4 py-2 text-sm font-medium focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2"
+        className="sr-only rounded-md bg-background px-4 py-2 text-sm font-medium focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:ring-2 focus:ring-ring"
       >
         Skip to content
       </a>

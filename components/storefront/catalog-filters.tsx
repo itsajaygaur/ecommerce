@@ -64,13 +64,13 @@ export function CatalogToolbar({ total, sort }: { total: number; sort: SortKey }
   const { update } = useFilterParams()
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <p className="text-muted-foreground text-sm" aria-live="polite">
-        {total} {total === 1 ? 'product' : 'products'}
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
+      <p className="eyebrow" aria-live="polite">
+        {total} {total === 1 ? 'item' : 'items'}
       </p>
 
-      <div className="flex items-center gap-2">
-        <Label htmlFor="sort" className="text-muted-foreground hidden text-sm sm:block">
+      <div className="flex items-center gap-3">
+        <Label htmlFor="sort" className="eyebrow hidden sm:block">
           Sort
         </Label>
         <Select
@@ -96,7 +96,7 @@ export function CatalogToolbar({ total, sort }: { total: number; sort: SortKey }
 /** Always-visible sidebar, desktop only. */
 export function CatalogFilterSidebar(props: Props) {
   return (
-    <aside className="hidden w-56 shrink-0 lg:block" aria-label="Filters">
+    <aside className="hidden w-56 shrink-0 lg:block lg:border-r lg:pr-8" aria-label="Filters">
       <FilterControls {...props} />
     </aside>
   )
@@ -145,7 +145,7 @@ function FilterControls({ categories, priceRange, currency }: Props) {
   const hasFilters = Boolean(activeCategory || inStockOnly || activeMax)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {hasFilters && (
         <Button
           variant="ghost"
@@ -159,15 +159,15 @@ function FilterControls({ categories, priceRange, currency }: Props) {
       )}
 
       <fieldset>
-        <legend className="eyebrow mb-3">Category</legend>
-        <ul className="space-y-1">
+        <legend className="eyebrow mb-4">Category</legend>
+        <ul>
           <li>
             <button
               type="button"
               onClick={() => update({ category: null })}
               className={cn(
-                'hover:bg-secondary w-full rounded-md px-2 py-1.5 text-left text-sm transition-colors',
-                !activeCategory && 'bg-secondary font-medium',
+                'w-full border-l-2 border-transparent py-2 pl-3 text-left text-sm transition-colors hover:text-signal',
+                !activeCategory && 'border-signal font-medium',
               )}
             >
               All products
@@ -180,14 +180,12 @@ function FilterControls({ categories, priceRange, currency }: Props) {
                 onClick={() => update({ category: category.slug })}
                 aria-pressed={activeCategory === category.slug}
                 className={cn(
-                  'hover:bg-secondary flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors',
-                  activeCategory === category.slug && 'bg-secondary font-medium',
+                  'flex w-full items-center justify-between border-l-2 border-transparent py-2 pr-1 pl-3 text-left text-sm transition-colors hover:text-signal',
+                  activeCategory === category.slug && 'border-signal font-medium',
                 )}
               >
                 <span>{category.name}</span>
-                <span className="text-muted-foreground text-xs tabular-nums">
-                  {category.productCount}
-                </span>
+                <span className="eyebrow">{category.productCount}</span>
               </button>
             </li>
           ))}
@@ -197,8 +195,8 @@ function FilterControls({ categories, priceRange, currency }: Props) {
       <Separator />
 
       <fieldset>
-        <legend className="eyebrow mb-3">Price up to</legend>
-        <ul className="space-y-1">
+        <legend className="eyebrow mb-4">Price up to</legend>
+        <ul>
           {priceBuckets.map((ceiling) => (
             <li key={ceiling}>
               <button
@@ -208,8 +206,8 @@ function FilterControls({ categories, priceRange, currency }: Props) {
                 }
                 aria-pressed={activeMax === String(ceiling)}
                 className={cn(
-                  'hover:bg-secondary w-full rounded-md px-2 py-1.5 text-left text-sm transition-colors',
-                  activeMax === String(ceiling) && 'bg-secondary font-medium',
+                  'w-full border-l-2 border-transparent py-2 pl-3 text-left text-sm transition-colors hover:text-signal',
+                  activeMax === String(ceiling) && 'border-signal font-medium',
                 )}
               >
                 {formatMoney(ceiling, currency, { compact: true })}
@@ -275,11 +273,11 @@ export function ActiveFilterChips({
     <ul className="flex flex-wrap items-center gap-2">
       {chips.map((chip) => (
         <li key={chip.key}>
-          <Badge variant="secondary" asChild>
+          <Badge variant="outline" asChild>
             <button
               type="button"
               onClick={() => update(chip.clear)}
-              className="cursor-pointer gap-1.5"
+              className="cursor-pointer gap-1.5 transition-colors hover:border-foreground"
             >
               {chip.label}
               <XIcon className="size-3" />

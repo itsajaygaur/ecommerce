@@ -43,12 +43,16 @@ export function AdminShell({
 }) {
   return (
     <div className="flex min-h-svh">
-      <aside className="bg-secondary/40 hidden w-60 shrink-0 flex-col border-r lg:flex">
+      <aside className="hidden w-60 shrink-0 flex-col border-r bg-background lg:flex">
         <div className="flex h-16 items-center border-b px-6">
-          <Link href="/admin" className="font-display text-lg font-semibold tracking-tight">
-            MyKart
+          <Link
+            href="/admin"
+            className="font-display text-lg leading-none font-semibold tracking-[0.14em]"
+            style={{ fontStretch: '122%' }}
+          >
+            PATINA
           </Link>
-          <span className="text-muted-foreground ml-2 text-xs">admin</span>
+          <span className="eyebrow ml-2.5">admin</span>
         </div>
 
         <NavList className="flex-1 p-3" />
@@ -56,13 +60,13 @@ export function AdminShell({
         <div className="border-t p-3">
           <div className="px-3 py-2">
             <p className="truncate text-sm font-medium">{email}</p>
-            <p className="text-muted-foreground text-xs capitalize">{role}</p>
+            <p className="text-xs text-muted-foreground capitalize">{role}</p>
           </div>
           <Link
             href="/"
             target="_blank"
             rel="noreferrer"
-            className="text-muted-foreground hover:bg-secondary hover:text-foreground flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors"
+            className="flex items-center gap-2.5 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ExternalLinkIcon className="size-4" />
             View storefront
@@ -70,7 +74,7 @@ export function AdminShell({
           <form action={logout}>
             <button
               type="submit"
-              className="text-muted-foreground hover:bg-secondary hover:text-foreground flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors"
+              className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <LogOutIcon className="size-4" />
               Sign out
@@ -80,7 +84,7 @@ export function AdminShell({
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="bg-background/85 supports-[backdrop-filter]:bg-background/65 sticky top-0 z-30 flex h-16 items-center gap-2 border-b px-4 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-2 border-b bg-background px-4 lg:px-8">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
@@ -89,13 +93,13 @@ export function AdminShell({
             </SheetTrigger>
             <SheetContent side="left" className="w-64">
               <SheetHeader>
-                <SheetTitle className="font-display">MyKart admin</SheetTitle>
+                <SheetTitle className="font-display tracking-[0.1em]">PATINA admin</SheetTitle>
               </SheetHeader>
               <NavList className="p-3" />
               <form action={logout} className="mt-auto border-t p-3">
                 <button
                   type="submit"
-                  className="text-muted-foreground hover:bg-secondary flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm"
+                  className="flex w-full items-center gap-2.5 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <LogOutIcon className="size-4" />
                   Sign out
@@ -119,7 +123,7 @@ function NavList({ className }: { className?: string }) {
   const pathname = usePathname()
 
   return (
-    <nav className={cn('flex flex-col gap-1', className)}>
+    <nav className={cn('flex flex-col', className)}>
       {NAV.map((item) => {
         const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
         const Icon = item.icon
@@ -130,10 +134,10 @@ function NavList({ className }: { className?: string }) {
             href={item.href}
             aria-current={active ? 'page' : undefined}
             className={cn(
-              'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
+              'flex items-center gap-2.5 border-l-2 py-2 pl-3 text-sm transition-colors',
               active
-                ? 'bg-background text-foreground font-medium shadow-xs'
-                : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
+                ? 'border-signal font-medium text-foreground'
+                : 'border-transparent text-muted-foreground hover:text-foreground',
             )}
           >
             <Icon className="size-4" />

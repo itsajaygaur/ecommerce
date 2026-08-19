@@ -28,7 +28,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "border-input bg-background data-[placeholder]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/40 flex w-fit items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-10 data-[size=sm]:h-8 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex w-fit items-center justify-between gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm whitespace-nowrap transition-[color,border-color] outline-none focus-visible:border-ring disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground data-[size=default]:h-10 data-[size=sm]:h-8 [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
@@ -53,7 +53,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] overflow-hidden rounded-lg border shadow-lg',
+          'relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] overflow-hidden border border-border bg-popover text-popover-foreground shadow-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0',
           position === 'popper' &&
             'data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1',
           className,
@@ -89,7 +89,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'focus:bg-secondary focus:text-secondary-foreground relative flex w-full cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+        'relative flex w-full cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-sm outline-none select-none focus:bg-secondary focus:text-secondary-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
         className,
       )}
       {...props}
@@ -107,7 +107,7 @@ function SelectItem({
 function SelectLabel({ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>) {
   return (
     <SelectPrimitive.Label
-      className={cn('text-muted-foreground px-2 py-1.5 text-xs', className)}
+      className={cn('px-2 py-1.5 text-xs text-muted-foreground', className)}
       {...props}
     />
   )
@@ -118,7 +118,7 @@ function SelectSeparator({
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Separator>) {
   return (
-    <SelectPrimitive.Separator className={cn('bg-border -mx-1 my-1 h-px', className)} {...props} />
+    <SelectPrimitive.Separator className={cn('-mx-1 my-1 h-px bg-border', className)} {...props} />
   )
 }
 

@@ -2,7 +2,7 @@ import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { CheckIcon, PackageIcon, RotateCcwIcon, TruckIcon } from 'lucide-react'
+import { CheckIcon } from 'lucide-react'
 import {
   Accordion,
   AccordionContent,
@@ -18,7 +18,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
 import { AddToCart } from '@/components/storefront/add-to-cart'
 import { ProductCard, ProductCardSkeleton } from '@/components/storefront/product-card'
 import { ProductGallery } from '@/components/storefront/product-gallery'
@@ -53,7 +52,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
   if (!product) return { title: 'Product not found' }
 
-  const description = product.description.slice(0, 160) || `${product.title} at MyKart.`
+  const description = product.description.slice(0, 160) || `${product.title} at PATINA.`
   const image = imageUrl(product.imagePath)
 
   return {
@@ -101,14 +100,14 @@ export default async function ProductPage({ params }: { params: Params }) {
   }
 
   return (
-    <div className="container-page py-8">
+    <div className="container-page py-10">
       <script
         type="application/ld+json"
         // Serialised server-side from our own database, never from user input.
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <Breadcrumb className="mb-8">
+      <Breadcrumb className="mb-10">
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
@@ -140,72 +139,75 @@ export default async function ProductPage({ params }: { params: Params }) {
         </BreadcrumbList>
       </Breadcrumb>
 
-      <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
         <ProductGallery images={product.images} title={product.title} />
 
-        <div className="lg:py-4">
+        <div className="lg:sticky lg:top-24 lg:self-start lg:py-2">
           {product.categoryName && <p className="eyebrow mb-3">{product.categoryName}</p>}
 
-          <h1 className="text-3xl leading-tight sm:text-4xl">{product.title}</h1>
+          <h1 className="text-display-3">{product.title}</h1>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <span className="text-2xl font-semibold">
+          {/* Price is the signal's headline job on this page. */}
+          <div className="mt-6 flex flex-wrap items-baseline gap-3 border-b pb-6">
+            <span data-testid="product-price" className="price text-display-4">
               {formatMoney(product.priceCents, product.currency)}
             </span>
             {product.compareAtPriceCents && product.compareAtPriceCents > product.priceCents && (
-              <span className="text-muted-foreground text-lg line-through">
+              <span className="text-muted-foreground tabular-nums line-through">
                 {formatMoney(product.compareAtPriceCents, product.currency)}
               </span>
             )}
-            {discount !== null && <Badge variant="subtle">Save {discount}%</Badge>}
+            {discount !== null && <span className="eyebrow text-signal">Save {discount}%</span>}
           </div>
 
-          <div className="mt-4">
+          <div className="mt-5">
             {soldOut ? (
               <Badge variant="secondary">Sold out</Badge>
             ) : product.stock <= 5 ? (
-              <Badge variant="warning">Only {product.stock} left in stock</Badge>
+              <Badge variant="outline">Only {product.stock} left in stock</Badge>
             ) : (
-              <span className="text-muted-foreground inline-flex items-center gap-1.5 text-sm">
-                <CheckIcon className="text-success size-4" aria-hidden />
+              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                <CheckIcon className="size-4 text-success" aria-hidden />
                 In stock, ready to ship
               </span>
             )}
           </div>
 
-          <p className="text-muted-foreground mt-6 leading-relaxed">{product.description}</p>
+          <p className="mt-6 text-[0.9375rem] leading-relaxed text-muted-foreground">
+            {product.description}
+          </p>
 
           <div className="mt-8">
             <AddToCart product={product} />
           </div>
 
-          <ul className="text-muted-foreground mt-8 grid gap-3 text-sm">
-            <li className="flex items-center gap-2.5">
-              <TruckIcon className="size-4 shrink-0" aria-hidden />
-              Free shipping on orders over ₹2,000
-            </li>
-            <li className="flex items-center gap-2.5">
-              <RotateCcwIcon className="size-4 shrink-0" aria-hidden />
-              30-day returns, unworn with tags
-            </li>
-            <li className="flex items-center gap-2.5">
-              <PackageIcon className="size-4 shrink-0" aria-hidden />
-              Dispatched within two working days
-            </li>
-          </ul>
+          {/*
+           * A ruled spec table rather than an icon list — same information, and
+           * it reuses the rule system instead of importing three more glyphs.
+           */}
+          <dl className="mt-10 border-t text-sm">
+            {[
+              ['Shipping', 'Free over ₹2,000'],
+              ['Returns', '30 days, unworn with tags'],
+              ['Dispatch', 'Within two working days'],
+            ].map(([term, detail]) => (
+              <div key={term} className="flex items-baseline justify-between gap-6 border-b py-3">
+                <dt className="eyebrow">{term}</dt>
+                <dd className="text-right">{detail}</dd>
+              </div>
+            ))}
+          </dl>
 
-          <Separator className="my-8" />
-
-          <Accordion type="single" collapsible defaultValue="details">
+          <Accordion type="single" collapsible defaultValue="details" className="mt-10">
             <AccordionItem value="details">
               <AccordionTrigger>Product details</AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed">
+              <AccordionContent className="leading-relaxed text-muted-foreground">
                 {product.description}
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="shipping">
               <AccordionTrigger>Shipping &amp; returns</AccordionTrigger>
-              <AccordionContent className="text-muted-foreground space-y-2 leading-relaxed">
+              <AccordionContent className="space-y-2 leading-relaxed text-muted-foreground">
                 <p>
                   Orders placed before 2pm are dispatched the next working day. Delivery typically
                   takes two to five days depending on your location.
@@ -218,7 +220,7 @@ export default async function ProductPage({ params }: { params: Params }) {
             </AccordionItem>
             <AccordionItem value="care">
               <AccordionTrigger>Care</AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed">
+              <AccordionContent className="leading-relaxed text-muted-foreground">
                 Wash cool and dry flat where applicable. Leather goods should be conditioned once or
                 twice a year; waxed cotton can be re-waxed at home.
               </AccordionContent>
@@ -227,10 +229,14 @@ export default async function ProductPage({ params }: { params: Params }) {
         </div>
       </div>
 
-      <section className="mt-24" aria-labelledby="related-heading">
-        <h2 id="related-heading" className="mb-8 text-2xl sm:text-3xl">
-          You might also like
-        </h2>
+      <section className="pt-section" aria-labelledby="related-heading">
+        <p className="eyebrow mb-4">Related</p>
+        <div className="mb-8 flex items-end gap-6">
+          <h2 id="related-heading" className="shrink-0 text-display-3">
+            You might also like
+          </h2>
+          <div className="mb-2 hidden h-px flex-1 border-t border-border sm:block" />
+        </div>
         <Suspense fallback={<RelatedSkeleton />}>
           <Related productId={product.id} categoryId={product.categoryId} />
         </Suspense>
@@ -250,7 +256,7 @@ async function Related({
   if (related.length === 0) return null
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
       {related.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
@@ -260,7 +266,7 @@ async function Related({
 
 function RelatedSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, index) => (
         <ProductCardSkeleton key={index} />
       ))}

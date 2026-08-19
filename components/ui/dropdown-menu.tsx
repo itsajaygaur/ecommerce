@@ -24,7 +24,7 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          'bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 min-w-[9rem] overflow-hidden rounded-lg border p-1 shadow-lg',
+          'z-50 min-w-[9rem] overflow-hidden border border-border bg-popover p-1 text-popover-foreground shadow-overlay data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           className,
         )}
         {...props}
@@ -45,7 +45,7 @@ function DropdownMenuItem({
       data-slot="dropdown-menu-item"
       data-variant={variant}
       className={cn(
-        "focus:bg-secondary focus:text-secondary-foreground relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none select-none focus:bg-secondary focus:text-secondary-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg:not([class*='size-'])]:size-4",
         variant === 'destructive' &&
           'text-destructive focus:bg-destructive/10 focus:text-destructive',
         className,
@@ -64,7 +64,7 @@ function DropdownMenuCheckboxItem({
   return (
     <DropdownMenuPrimitive.CheckboxItem
       className={cn(
-        'focus:bg-secondary relative flex cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm outline-none select-none',
+        'relative flex cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-8 text-sm outline-none select-none focus:bg-secondary',
         className,
       )}
       checked={checked}
@@ -86,7 +86,7 @@ function DropdownMenuLabel({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Label>) {
   return (
     <DropdownMenuPrimitive.Label
-      className={cn('text-muted-foreground px-2 py-1.5 text-xs font-medium', className)}
+      className={cn('px-2 py-1.5 text-xs font-medium text-muted-foreground', className)}
       {...props}
     />
   )
@@ -98,7 +98,7 @@ function DropdownMenuSeparator({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
   return (
     <DropdownMenuPrimitive.Separator
-      className={cn('bg-border -mx-1 my-1 h-px', className)}
+      className={cn('-mx-1 my-1 h-px bg-border', className)}
       {...props}
     />
   )
@@ -115,7 +115,7 @@ function DropdownMenuSubTrigger({
   return (
     <DropdownMenuPrimitive.SubTrigger
       className={cn(
-        'focus:bg-secondary flex items-center rounded-md px-2 py-1.5 text-sm outline-none',
+        'flex items-center rounded-md px-2 py-1.5 text-sm outline-none focus:bg-secondary',
         className,
       )}
       {...props}
@@ -132,7 +132,10 @@ function DropdownMenuSubContent({
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
     <DropdownMenuPrimitive.SubContent
-      className={cn('bg-popover z-50 min-w-[8rem] rounded-lg border p-1 shadow-lg', className)}
+      className={cn(
+        'z-50 min-w-[8rem] border border-border bg-popover p-1 shadow-overlay',
+        className,
+      )}
       {...props}
     />
   )

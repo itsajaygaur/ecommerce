@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { SearchXIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Pagination } from '@/components/ui/pagination'
 import {
@@ -25,7 +24,7 @@ import { parsePositiveInt } from '@/lib/utils'
 export const metadata: Metadata = {
   title: 'All products',
   description:
-    'Browse the full MyKart catalog — apparel, bags, footwear, home goods and accessories.',
+    'Browse the full PATINA catalogue — apparel, bags, footwear, home goods and accessories.',
 }
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>
@@ -59,17 +58,22 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   }
 
   return (
-    <div className="container-page py-10">
-      <header className="mb-8">
-        <p className="eyebrow mb-2">Catalog</p>
-        <h1 className="text-4xl sm:text-5xl">
+    <div className="container-page py-12">
+      <header className="mb-10 border-b pb-8">
+        <p className="eyebrow mb-4">Catalogue</p>
+        {/*
+         * The heading is the query or category verbatim. Any index numeral or
+         * decoration belongs in a sibling — this text is a shareable label and
+         * the e2e suite matches it exactly.
+         */}
+        <h1 className="text-display-2">
           {query
             ? `Results for “${query}”`
             : (categories.find((c) => c.slug === category)?.name ?? 'All products')}
         </h1>
       </header>
 
-      <div className="lg:flex lg:gap-10">
+      <div className="lg:flex lg:gap-12">
         <CatalogFilterSidebar
           categories={categories}
           priceRange={priceRange}
@@ -77,7 +81,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           total={total}
         />
 
-        <div className="min-w-0 flex-1 space-y-6">
+        <div className="min-w-0 flex-1 space-y-8">
           <div className="flex flex-wrap items-center gap-3">
             <CatalogFilterSheet
               categories={categories}
@@ -103,17 +107,13 @@ async function Results({ filters }: { filters: Parameters<typeof listProducts>[0
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed py-20 text-center">
-        <div className="bg-muted flex size-14 items-center justify-center rounded-full">
-          <SearchXIcon className="text-muted-foreground size-6" />
-        </div>
-        <div className="space-y-1">
-          <p className="font-medium">Nothing matched those filters</p>
-          <p className="text-muted-foreground max-w-sm text-sm">
-            Try a broader price range, a different category, or clear the search term.
-          </p>
-        </div>
-        <Button asChild variant="outline">
+      <div className="border-y py-24">
+        <p className="eyebrow mb-4">No results</p>
+        <p className="max-w-md text-display-3">Nothing matched those filters</p>
+        <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+          Try a broader price range, a different category, or clear the search term.
+        </p>
+        <Button asChild variant="outline" className="mt-8">
           <Link href="/products">Reset filters</Link>
         </Button>
       </div>
@@ -124,7 +124,7 @@ async function Results({ filters }: { filters: Parameters<typeof listProducts>[0
     <>
       <CatalogToolbar total={total} sort={filters?.sort ?? 'relevance'} />
 
-      <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 xl:grid-cols-4">
         {items.map((product, index) => (
           <ProductCard
             key={product.id}
@@ -136,7 +136,7 @@ async function Results({ filters }: { filters: Parameters<typeof listProducts>[0
       </div>
 
       <Pagination
-        className="pt-6"
+        className="mt-12 border-t pt-8"
         page={page}
         pageCount={pageCount}
         buildHref={(target) => {
@@ -157,7 +157,7 @@ async function Results({ filters }: { filters: Parameters<typeof listProducts>[0
 
 function ResultsSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-12 sm:grid-cols-3 xl:grid-cols-4">
       {Array.from({ length: 8 }).map((_, index) => (
         <ProductCardSkeleton key={index} />
       ))}

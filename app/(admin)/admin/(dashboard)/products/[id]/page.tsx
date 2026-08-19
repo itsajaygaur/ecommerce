@@ -32,12 +32,12 @@ export default async function EditProductPage({ params }: { params: Params }) {
         <div>
           <Link
             href="/admin/products"
-            className="text-muted-foreground hover:text-foreground mb-3 inline-flex items-center gap-1 text-sm"
+            className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ChevronLeftIcon className="size-4" />
             Products
           </Link>
-          <h1 className="text-3xl">{product.title}</h1>
+          <h1 className="text-display-3">{product.title}</h1>
         </div>
         <Button asChild variant="outline">
           <Link href={`/products/${product.slug}`} target="_blank" rel="noreferrer">

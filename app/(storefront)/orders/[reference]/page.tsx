@@ -2,10 +2,8 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { CheckCircle2Icon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { ClearCartOnMount } from '@/components/storefront/clear-cart-on-mount'
 import { getOrderByReference } from '@/lib/queries/orders'
 import { formatMoney } from '@/lib/money'
@@ -52,46 +50,52 @@ export default async function OrderPage({
           old order later does not silently empty a bag someone is filling. */}
       {isNew === '1' && <ClearCartOnMount />}
 
-      <div className="text-center">
-        <CheckCircle2Icon className="text-success mx-auto size-14" aria-hidden />
-        <h1 className="mt-6 text-4xl">
-          Thank you{order.customerName ? `, ${order.customerName.split(' ')[0]}` : ''}
-        </h1>
-        <p className="text-muted-foreground mt-3">
-          Your order is confirmed. We&apos;ve sent a receipt to{' '}
-          <span className="text-foreground font-medium">{order.email}</span>.
-        </p>
-      </div>
+      {/*
+       * Composed as a receipt rather than a confirmation card — mono meta in a
+       * ruled row, ruled line items, totals right-aligned under a heavier rule.
+       * It is the surface this design language suits most naturally, so the
+       * centred tick-in-a-circle is gone.
+       */}
+      <p className="eyebrow text-signal">Order confirmed</p>
+      <h1 className="mt-4 text-display-2">
+        Thank you{order.customerName ? `, ${order.customerName.split(' ')[0]}` : ''}
+      </h1>
+      <p className="mt-4 text-[0.9375rem] leading-relaxed text-muted-foreground">
+        Your order is confirmed. We&apos;ve sent a receipt to{' '}
+        <span className="font-medium text-foreground">{order.email}</span>.
+      </p>
 
-      <div className="bg-secondary/60 mt-10 flex flex-wrap items-center justify-between gap-4 rounded-xl px-6 py-4 text-sm">
-        <div>
-          <p className="text-muted-foreground text-xs tracking-wide uppercase">Order</p>
-          <p className="font-mono font-medium">{order.reference}</p>
+      <dl className="mt-10 grid grid-cols-2 border-y sm:grid-cols-3">
+        <div className="border-border py-4 pr-6 sm:border-r">
+          <dt className="eyebrow mb-2">Order</dt>
+          <dd className="font-mono text-sm font-medium">{order.reference}</dd>
         </div>
-        <div>
-          <p className="text-muted-foreground text-xs tracking-wide uppercase">Placed</p>
-          <p className="font-medium">{formatDate(order.createdAt)}</p>
+        <div className="border-border py-4 pr-6 sm:border-r sm:pl-6">
+          <dt className="eyebrow mb-2">Placed</dt>
+          <dd className="text-sm font-medium">{formatDate(order.createdAt)}</dd>
         </div>
-        <div>
-          <p className="text-muted-foreground text-xs tracking-wide uppercase">Status</p>
-          <Badge
-            variant={
-              order.status === 'paid' || order.status === 'fulfilled' ? 'success' : 'secondary'
-            }
-          >
-            {order.status}
-          </Badge>
+        <div className="col-span-2 border-t py-4 sm:col-span-1 sm:border-t-0 sm:pl-6">
+          <dt className="eyebrow mb-2">Status</dt>
+          <dd>
+            <Badge
+              variant={
+                order.status === 'paid' || order.status === 'fulfilled' ? 'success' : 'secondary'
+              }
+            >
+              {order.status}
+            </Badge>
+          </dd>
         </div>
-      </div>
+      </dl>
 
       <section className="mt-10" aria-labelledby="items-heading">
-        <h2 id="items-heading" className="mb-4 text-xl">
+        <h2 id="items-heading" className="eyebrow-strong mb-4">
           Items
         </h2>
         <ul className="divide-y border-y">
           {order.items.map((item) => (
             <li key={item.id} className="flex items-center gap-4 py-4">
-              <div className="bg-muted relative aspect-(--aspect-product) w-16 shrink-0 overflow-hidden rounded-md">
+              <div className="relative aspect-(--aspect-product) w-16 shrink-0 overflow-hidden bg-muted">
                 <Image
                   src={imageUrl(item.imagePath)}
                   alt=""
@@ -103,13 +107,16 @@ export default async function OrderPage({
               </div>
               <div className="min-w-0 flex-1">
                 {item.slug ? (
-                  <Link href={`/products/${item.slug}`} className="font-medium hover:underline">
+                  <Link
+                    href={`/products/${item.slug}`}
+                    className="font-medium transition-colors hover:text-signal"
+                  >
                     {item.title}
                   </Link>
                 ) : (
                   <p className="font-medium">{item.title}</p>
                 )}
-                <p className="text-muted-foreground mt-0.5 text-sm">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   {formatMoney(item.unitPriceCents, order.currency)} × {item.quantity}
                 </p>
               </div>
@@ -133,22 +140,21 @@ export default async function OrderPage({
               {shipping === 0 ? 'Free' : formatMoney(shipping, order.currency)}
             </dd>
           </div>
-          <Separator />
-          <div className="flex justify-between text-base font-semibold">
+          <div className="flex justify-between border-t border-border-strong pt-3 text-base font-medium">
             <dt>Total paid</dt>
-            <dd className="tabular-nums">{formatMoney(order.amountTotalCents, order.currency)}</dd>
+            <dd className="price">{formatMoney(order.amountTotalCents, order.currency)}</dd>
           </div>
         </dl>
       </section>
 
       {address && (
-        <section className="mt-10" aria-labelledby="shipping-heading">
-          <h2 id="shipping-heading" className="mb-3 text-xl">
+        <section className="mt-10 border-t pt-8" aria-labelledby="shipping-heading">
+          <h2 id="shipping-heading" className="eyebrow-strong mb-4">
             Shipping to
           </h2>
-          <address className="text-muted-foreground text-sm not-italic">
+          <address className="text-sm text-muted-foreground not-italic">
             {order.customerName && (
-              <div className="text-foreground font-medium">{order.customerName}</div>
+              <div className="font-medium text-foreground">{order.customerName}</div>
             )}
             {address.line1 && <div>{address.line1}</div>}
             {address.line2 && <div>{address.line2}</div>}
@@ -160,7 +166,7 @@ export default async function OrderPage({
         </section>
       )}
 
-      <div className="mt-12 flex justify-center">
+      <div className="mt-12 border-t pt-8">
         <Button asChild size="lg" variant="outline">
           <Link href="/products">Continue shopping</Link>
         </Button>

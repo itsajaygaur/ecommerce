@@ -15,18 +15,22 @@ export default async function AdminLoginPage({ searchParams }: { searchParams: S
   return (
     <div className="flex min-h-svh flex-col items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <Link href="/" className="font-display text-2xl font-semibold tracking-tight">
-            MyKart
+        <div className="mb-10 border-b pb-8">
+          <Link
+            href="/"
+            className="font-display text-2xl leading-none font-semibold tracking-[0.14em]"
+            style={{ fontStretch: '122%' }}
+          >
+            PATINA
           </Link>
-          <p className="text-muted-foreground mt-2 text-sm">Sign in to the back office</p>
+          <p className="eyebrow mt-4">Sign in to the back office</p>
         </div>
 
         {/* `next` is validated in the form: only same-origin paths are honoured. */}
         <LoginForm next={next} />
 
-        <p className="text-muted-foreground mt-6 text-center text-xs">
-          <Link href="/" className="hover:text-foreground underline-offset-4 hover:underline">
+        <p className="mt-8 text-xs text-muted-foreground">
+          <Link href="/" className="underline-offset-4 hover:text-foreground hover:underline">
             Back to the storefront
           </Link>
         </p>

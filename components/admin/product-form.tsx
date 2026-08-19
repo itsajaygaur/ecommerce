@@ -205,7 +205,7 @@ export function ProductForm({ product, categories }: Props) {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="border-input hover:border-ring hover:bg-secondary/50 text-muted-foreground flex aspect-(--aspect-product) flex-col items-center justify-center gap-1.5 rounded-md border-2 border-dashed transition-colors"
+                className="flex aspect-(--aspect-product) flex-col items-center justify-center gap-1.5 rounded-md border-2 border-dashed border-input text-muted-foreground transition-colors hover:border-ring hover:bg-secondary/50"
               >
                 <ImagePlusIcon className="size-5" />
                 <span className="text-xs">Add image</span>
@@ -365,9 +365,9 @@ function Field({
       <Label htmlFor={htmlFor}>{label}</Label>
       {children}
       {error ? (
-        <p className="text-destructive text-xs">{error}</p>
+        <p className="text-xs text-destructive">{error}</p>
       ) : hint ? (
-        <p className="text-muted-foreground text-xs">{hint}</p>
+        <p className="text-xs text-muted-foreground">{hint}</p>
       ) : null}
     </div>
   )
@@ -383,7 +383,7 @@ function ImageTile({
   isNew?: boolean
 }) {
   return (
-    <div className="bg-muted relative aspect-(--aspect-product) overflow-hidden rounded-md border">
+    <div className="relative aspect-(--aspect-product) overflow-hidden rounded-md border bg-muted">
       {isNew ? (
         // A blob: URL from the file picker cannot go through the image optimiser.
         // eslint-disable-next-line @next/next/no-img-element
@@ -395,7 +395,7 @@ function ImageTile({
         type="button"
         onClick={onRemove}
         aria-label="Remove image"
-        className="bg-background/90 hover:bg-destructive hover:text-destructive-foreground absolute top-1.5 right-1.5 rounded-full p-1 shadow-sm transition-colors"
+        className="absolute top-1.5 right-1.5 bg-background/90 p-1 transition-colors hover:bg-destructive hover:text-destructive-foreground"
       >
         <XIcon className="size-3.5" />
       </button>

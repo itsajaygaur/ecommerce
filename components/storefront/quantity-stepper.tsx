@@ -29,7 +29,7 @@ export function QuantityStepper({
   return (
     <div
       className={cn(
-        'border-input inline-flex items-center justify-between rounded-md border',
+        'inline-flex items-center justify-between border border-input',
         size === 'sm' ? 'h-8 px-0.5' : 'h-10 px-1',
         className,
       )}

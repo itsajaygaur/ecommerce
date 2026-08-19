@@ -21,7 +21,7 @@ export function RevenueChart({
 
   if (!hasRevenue) {
     return (
-      <div className="text-muted-foreground flex h-[300px] items-center justify-center text-sm">
+      <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
         No revenue recorded yet.
       </div>
     )
@@ -30,17 +30,19 @@ export function RevenueChart({
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={data} margin={{ top: 8, right: 16, left: 8, bottom: 0 }}>
-        <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 3" />
+        {/* Solid hairlines, horizontal only — the dashed grid was decoration. */}
+        <CartesianGrid vertical={false} stroke="var(--border)" />
         <XAxis
           dataKey="month"
           stroke="var(--muted-foreground)"
-          fontSize={12}
+          fontSize={11}
           tickLine={false}
           axisLine={false}
+          tick={{ letterSpacing: '0.08em' }}
         />
         <YAxis
           stroke="var(--muted-foreground)"
-          fontSize={12}
+          fontSize={11}
           tickLine={false}
           axisLine={false}
           width={64}
@@ -51,13 +53,13 @@ export function RevenueChart({
           contentStyle={{
             background: 'var(--popover)',
             border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: 0,
             fontSize: 12,
           }}
           labelStyle={{ color: 'var(--popover-foreground)' }}
           formatter={(value) => [formatMoney(Number(value), currency), 'Revenue']}
         />
-        <Bar dataKey="revenueCents" fill="var(--chart-1)" radius={[4, 4, 0, 0]} maxBarSize={48} />
+        <Bar dataKey="revenueCents" fill="var(--chart-1)" radius={0} maxBarSize={56} />
       </BarChart>
     </ResponsiveContainer>
   )

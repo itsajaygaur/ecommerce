@@ -6,7 +6,6 @@ import { useFormStatus } from 'react-dom'
 import { Loader2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { login, type LoginState } from '@/lib/actions/auth'
@@ -46,15 +45,15 @@ export function LoginForm({ next }: { next?: string }) {
   }, [state, next, router])
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle asChild>
-          <h1 className="text-xl">Sign in</h1>
-        </CardTitle>
-        <CardDescription>Enter your administrator email and password.</CardDescription>
-      </CardHeader>
+    <div>
+      <div className="mb-6">
+        <h1 className="text-display-3">Sign in</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Enter your administrator email and password.
+        </p>
+      </div>
 
-      <CardContent>
+      <div>
         <form action={formAction} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
@@ -71,7 +70,7 @@ export function LoginForm({ next }: { next?: string }) {
               placeholder="you@example.com"
             />
             {state?.fieldErrors?.email && (
-              <p id="email-error" className="text-destructive text-xs">
+              <p id="email-error" className="text-xs text-destructive">
                 {state.fieldErrors.email}
               </p>
             )}
@@ -90,22 +89,22 @@ export function LoginForm({ next }: { next?: string }) {
               aria-describedby={state?.fieldErrors?.password ? 'password-error' : undefined}
             />
             {state?.fieldErrors?.password && (
-              <p id="password-error" className="text-destructive text-xs">
+              <p id="password-error" className="text-xs text-destructive">
                 {state.fieldErrors.password}
               </p>
             )}
           </div>
 
           {state && !state.ok && state.message && (
-            <p role="alert" className="text-destructive text-sm">
+            <p role="alert" className="text-sm text-destructive">
               {state.message}
             </p>
           )}
 
           <SubmitButton />
         </form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 

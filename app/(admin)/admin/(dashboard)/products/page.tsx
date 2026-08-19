@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { PackageIcon, PlusIcon } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Pagination } from '@/components/ui/pagination'
@@ -59,8 +59,8 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl">Products</h1>
-          <p className="text-muted-foreground mt-1 text-sm">
+          <h1 className="text-display-3">Products</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             {total} {total === 1 ? 'product' : 'products'}
             {status ? ` in ${status}` : ''}
             {query ? ` matching “${query}”` : ''}
@@ -77,24 +77,20 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
       <ProductTableToolbar counts={counts} categories={categories} />
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed py-20 text-center">
-          <div className="bg-muted flex size-14 items-center justify-center rounded-full">
-            <PackageIcon className="text-muted-foreground size-6" />
-          </div>
-          <div className="space-y-1">
-            <p className="font-medium">No products found</p>
-            <p className="text-muted-foreground max-w-sm text-sm">
-              {query || status
-                ? 'Try clearing the search or status filter.'
-                : 'Add your first product to get the storefront going.'}
-            </p>
-          </div>
-          <Button asChild variant="outline">
+        <div className="border-y py-20">
+          <p className="eyebrow mb-3">Empty</p>
+          <p className="text-display-4">No products found</p>
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            {query || status
+              ? 'Try clearing the search or status filter.'
+              : 'Add your first product to get the storefront going.'}
+          </p>
+          <Button asChild variant="outline" className="mt-6">
             <Link href="/admin/products/new">Add product</Link>
           </Button>
         </div>
       ) : (
-        <div className="rounded-xl border">
+        <div className="border-y">
           <Table>
             <TableHeader>
               {/* Seven headers for seven cells. The previous table declared four
@@ -118,7 +114,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
               {items.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>
-                    <div className="bg-muted relative size-10 overflow-hidden rounded-md">
+                    <div className="relative size-10 overflow-hidden rounded-md bg-muted">
                       <Image
                         src={imageUrl(product.imagePath)}
                         alt=""
@@ -136,9 +132,9 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                     >
                       {product.title}
                     </Link>
-                    <p className="text-muted-foreground truncate text-xs">/{product.slug}</p>
+                    <p className="truncate text-xs text-muted-foreground">/{product.slug}</p>
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
+                  <TableCell className="text-sm text-muted-foreground">
                     {product.categoryName ?? '—'}
                   </TableCell>
                   <TableCell className="text-right tabular-nums">
@@ -162,7 +158,7 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                       {product.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground hidden text-sm md:table-cell">
+                  <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
                     {formatDate(product.createdAt)}
                   </TableCell>
                   <TableCell className="text-right">

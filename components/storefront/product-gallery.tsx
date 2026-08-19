@@ -39,10 +39,10 @@ export function ProductGallery({
                 aria-label={`View image ${index + 1} of ${images.length}`}
                 onClick={() => setActiveIndex(index)}
                 className={cn(
-                  'bg-muted focus-visible:ring-ring relative aspect-(--aspect-product) w-16 overflow-hidden rounded-md border-2 transition-colors focus-visible:ring-2 focus-visible:ring-offset-2',
+                  'relative aspect-(--aspect-product) w-16 overflow-hidden rounded-md border-2 bg-muted transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   index === activeIndex
                     ? 'border-foreground'
-                    : 'hover:border-border border-transparent',
+                    : 'border-transparent hover:border-border',
                 )}
               >
                 <Image
@@ -59,7 +59,7 @@ export function ProductGallery({
         </ul>
       )}
 
-      <div className="bg-muted relative aspect-(--aspect-product) flex-1 overflow-hidden rounded-xl">
+      <div className="relative aspect-(--aspect-product) flex-1 overflow-hidden rounded-xl bg-muted">
         <Image
           key={active?.id ?? 'placeholder'}
           src={imageUrl(active?.path)}

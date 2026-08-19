@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test'
 test('home page presents the catalog', async ({ page }) => {
   await page.goto('/')
 
-  await expect(page.getByRole('heading', { name: /considered goods/i })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /outlast the season/i })).toBeVisible()
   await expect(page.getByRole('heading', { name: /shop by category/i })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Shop all' })).toBeVisible()
 })
@@ -44,14 +44,20 @@ test('category filter is shareable via the URL', async ({ page }) => {
 test('sorting by price ascending really orders the results', async ({ page }) => {
   await page.goto('/products?sort=price-asc')
 
+  // Anchored on a data-testid rather than a utility class. The previous selector
+  // read `.font-semibold`, so a restyle that changed the price's font weight made
+  // every card fall through to '0' — and a list of zeroes is trivially sorted, so
+  // the test would have gone on passing while checking nothing.
   const prices = await page.locator('article').evaluateAll((cards) =>
     cards.map((card) => {
-      const text = card.querySelector('.font-semibold')?.textContent ?? '0'
-      return Number(text.replace(/[^\d.]/g, ''))
+      const el = card.querySelector('[data-testid="product-price"]')
+      if (!el) throw new Error('product card is missing [data-testid="product-price"]')
+      return Number((el.textContent ?? '').replace(/[^\d.]/g, ''))
     }),
   )
 
   expect(prices.length).toBeGreaterThan(1)
+  expect(prices.every((price) => price > 0)).toBe(true)
   expect([...prices].sort((a, b) => a - b)).toEqual(prices)
 })
 

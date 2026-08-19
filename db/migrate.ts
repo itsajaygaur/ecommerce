@@ -16,6 +16,10 @@ loadEnvConfig(process.cwd())
  * whole using Postgres' simple query protocol.
  *
  * Applied migrations are recorded in `_mykart_migrations` and never re-run.
+ *
+ * That table name is deliberately not part of the PATINA rebrand: renaming it
+ * makes the ledger read as empty, so every migration re-runs from scratch
+ * against a populated production database.
  */
 
 const MIGRATIONS_DIR = join(process.cwd(), 'drizzle')

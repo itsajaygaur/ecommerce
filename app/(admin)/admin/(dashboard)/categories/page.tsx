@@ -13,8 +13,8 @@ export default async function AdminCategoriesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl">Categories</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <h1 className="text-display-3">Categories</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Categories drive storefront navigation and filtering. Deleting one leaves its products
           uncategorised rather than removing them.
         </p>

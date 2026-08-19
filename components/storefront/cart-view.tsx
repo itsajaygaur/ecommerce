@@ -4,10 +4,9 @@ import { Suspense, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { ShoppingBagIcon, Trash2Icon } from 'lucide-react'
+import { Trash2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CheckoutButton } from '@/components/storefront/checkout-button'
 import { QuantityStepper } from '@/components/storefront/quantity-stepper'
@@ -44,17 +43,13 @@ function CartViewInner() {
 
   if (lines.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-5 rounded-xl border border-dashed py-24 text-center">
-        <div className="bg-muted flex size-16 items-center justify-center rounded-full">
-          <ShoppingBagIcon className="text-muted-foreground size-7" />
-        </div>
-        <div className="space-y-1">
-          <p className="text-lg font-medium">Your bag is empty</p>
-          <p className="text-muted-foreground max-w-sm text-sm">
-            Have a look at the catalog — everything in it is chosen to last.
-          </p>
-        </div>
-        <Button asChild size="lg">
+      <div className="border-y py-24">
+        <p className="eyebrow mb-4">Empty</p>
+        <p className="text-display-3">Your bag is empty</p>
+        <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+          Have a look at the catalogue — everything in it is chosen to last.
+        </p>
+        <Button asChild size="lg" className="mt-8">
           <Link href="/products">Browse products</Link>
         </Button>
       </div>
@@ -73,7 +68,7 @@ function CartViewInner() {
             <li key={line.productId} className="flex gap-5 py-6">
               <Link
                 href={`/products/${line.snapshot.slug}`}
-                className="bg-muted relative aspect-(--aspect-product) w-24 shrink-0 overflow-hidden rounded-md sm:w-28"
+                className="relative aspect-(--aspect-product) w-24 shrink-0 overflow-hidden bg-muted sm:w-28"
               >
                 <Image
                   src={imageUrl(line.snapshot.imagePath)}
@@ -89,15 +84,15 @@ function CartViewInner() {
                   <div className="min-w-0">
                     <Link
                       href={`/products/${line.snapshot.slug}`}
-                      className="font-medium hover:underline"
+                      className="font-medium transition-colors hover:text-signal"
                     >
                       {line.snapshot.title}
                     </Link>
-                    <p className="text-muted-foreground mt-1 text-sm">
+                    <p className="mt-1 text-sm text-muted-foreground">
                       {formatMoney(line.snapshot.priceCents, line.snapshot.currency)} each
                     </p>
                   </div>
-                  <p className="shrink-0 font-semibold tabular-nums">
+                  <p className="price shrink-0">
                     {formatMoney(line.snapshot.priceCents * line.quantity, line.snapshot.currency)}
                   </p>
                 </div>
@@ -127,8 +122,8 @@ function CartViewInner() {
       </section>
 
       <aside aria-label="Order summary" className="lg:sticky lg:top-24 lg:self-start">
-        <div className="bg-secondary/60 space-y-4 rounded-xl p-6">
-          <h2 className="font-display text-xl">Summary</h2>
+        <div className="space-y-5 border-t border-border-strong pt-5">
+          <h2 className="eyebrow-strong">Summary</h2>
 
           <dl className="space-y-2.5 text-sm">
             <div className="flex justify-between">
@@ -141,7 +136,7 @@ function CartViewInner() {
               <dt className="text-muted-foreground">Shipping</dt>
               <dd className="tabular-nums">
                 {shipping === 0 ? (
-                  <span className="text-success font-medium">Free</span>
+                  <span className="font-medium text-success">Free</span>
                 ) : (
                   formatMoney(shipping, currency)
                 )}
@@ -150,23 +145,33 @@ function CartViewInner() {
           </dl>
 
           {remainingForFreeShipping > 0 && (
-            <p className="text-muted-foreground bg-background rounded-md px-3 py-2 text-xs">
-              Add {formatMoney(remainingForFreeShipping, currency)} more for free shipping.
-            </p>
+            <div>
+              {/* A hairline track with a signal fill — the same rule vocabulary
+                  as everything else, rather than a tinted notice box. */}
+              <div className="h-0.5 w-full bg-muted">
+                <div
+                  className="h-full bg-signal transition-[width] duration-500"
+                  style={{
+                    width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD_CENTS) * 100)}%`,
+                  }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                Add {formatMoney(remainingForFreeShipping, currency)} more for free shipping.
+              </p>
+            </div>
           )}
 
-          <Separator />
-
-          <div className="flex items-baseline justify-between">
+          <div className="flex items-baseline justify-between border-t pt-4">
             <span className="font-medium">Estimated total</span>
-            <span className="text-lg font-semibold tabular-nums">
+            <span className="price text-display-4">
               {formatMoney(subtotal + shipping, currency)}
             </span>
           </div>
 
           <CheckoutButton lines={lines} size="lg" className="w-full" />
 
-          <p className="text-muted-foreground text-center text-xs">
+          <p className="text-xs text-muted-foreground">
             Final shipping and taxes are confirmed at checkout.
           </p>
         </div>
@@ -199,7 +204,7 @@ function CartSkeleton() {
           </div>
         ))}
       </div>
-      <Skeleton className="h-72 rounded-xl" />
+      <Skeleton className="h-72" />
     </div>
   )
 }

@@ -8,6 +8,13 @@ import { jwtVerify, SignJWT } from 'jose'
  * reading and writing lives in `lib/auth/cookies.ts`, which is Node-only.
  */
 
+/**
+ * Wire identifiers, not brand names — they survived the PATINA rebrand on
+ * purpose. The cookie name is what an already-signed-in admin's browser is
+ * holding, and the issuer/audience below are *verified* claims inside tokens
+ * that have already been handed out. Renaming any of them signs out every
+ * active administrator the moment the change deploys.
+ */
 export const SESSION_COOKIE = 'mykart_session'
 export const SESSION_MAX_AGE_SECONDS = 60 * 60 * 12
 

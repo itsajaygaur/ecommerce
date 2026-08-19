@@ -18,7 +18,9 @@ export function QuickAddButton({ product }: { product: ProductListItem }) {
       type="button"
       size="sm"
       variant="default"
-      className="w-full shadow-lg"
+      // Flush to the frame edge: full width, square, no gap. The bar IS the
+      // bottom of the image, not a floating chip inside it.
+      className="h-10 w-full rounded-none"
       onClick={(event) => {
         // The card is a stretched link; without this the click navigates away.
         event.preventDefault()

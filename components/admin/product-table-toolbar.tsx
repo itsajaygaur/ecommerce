@@ -102,7 +102,7 @@ export function ProductTableToolbar({
         </Label>
         <SearchIcon
           aria-hidden
-          className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
         />
         <Input
           id="admin-product-search"
@@ -114,7 +114,7 @@ export function ProductTableToolbar({
         />
       </div>
 
-      <div role="group" aria-label="Filter by status" className="bg-muted flex rounded-lg p-1">
+      <div role="group" aria-label="Filter by status" className="flex border">
         {STATUSES.map((status) => (
           <button
             key={status.key || 'all'}
@@ -122,14 +122,14 @@ export function ProductTableToolbar({
             aria-pressed={currentStatus === status.key}
             onClick={() => apply({ status: status.key || null })}
             className={cn(
-              'rounded-md px-3 py-1.5 text-sm transition-colors',
+              'border-border px-3 py-1.5 text-sm transition-colors not-first:border-l',
               currentStatus === status.key
-                ? 'bg-background font-medium shadow-xs'
+                ? 'bg-foreground font-medium text-background'
                 : 'text-muted-foreground hover:text-foreground',
             )}
           >
             {status.label}
-            <span className="text-muted-foreground ml-1.5 text-xs tabular-nums">
+            <span className="ml-1.5 font-mono text-[0.6875rem] tabular-nums opacity-70">
               {status.key === '' ? counts.all : counts[status.key]}
             </span>
           </button>
@@ -137,7 +137,7 @@ export function ProductTableToolbar({
       </div>
 
       <div className="flex items-center gap-2">
-        <Label htmlFor="admin-product-sort" className="text-muted-foreground text-sm">
+        <Label htmlFor="admin-product-sort" className="text-sm text-muted-foreground">
           Sort
         </Label>
         <Select
@@ -158,7 +158,7 @@ export function ProductTableToolbar({
       </div>
 
       {categories.length === 0 && (
-        <p className="text-muted-foreground text-xs">
+        <p className="text-xs text-muted-foreground">
           No categories yet — products will show as uncategorised.
         </p>
       )}
