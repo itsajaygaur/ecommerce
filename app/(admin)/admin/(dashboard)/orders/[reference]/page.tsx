@@ -29,13 +29,13 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
       <div>
         <Link
           href="/admin/orders"
-          className="text-muted-foreground hover:text-foreground mb-3 inline-flex items-center gap-1 text-sm"
+          className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeftIcon className="size-4" />
           Orders
         </Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="font-mono text-3xl">{order.reference}</h1>
+          <h1 className="font-mono text-display-3">{order.reference}</h1>
           <Badge
             variant={
               order.status === 'paid' || order.status === 'fulfilled' ? 'success' : 'secondary'
@@ -44,7 +44,7 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
             {order.status}
           </Badge>
         </div>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <p className="mt-1 text-sm text-muted-foreground">
           Placed {formatDate(order.createdAt, { dateStyle: 'full', timeStyle: 'short' })}
         </p>
       </div>
@@ -58,7 +58,7 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
             <ul className="divide-y">
               {order.items.map((item) => (
                 <li key={item.id} className="flex items-center gap-4 py-3 first:pt-0">
-                  <div className="bg-muted relative size-12 shrink-0 overflow-hidden rounded-md">
+                  <div className="relative size-12 shrink-0 overflow-hidden rounded-md bg-muted">
                     <Image
                       src={imageUrl(item.imagePath)}
                       alt=""
@@ -79,7 +79,7 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
                     ) : (
                       <p className="text-sm font-medium">{item.title}</p>
                     )}
-                    <p className="text-muted-foreground text-xs">
+                    <p className="text-xs text-muted-foreground">
                       {formatMoney(item.unitPriceCents, order.currency)} × {item.quantity}
                     </p>
                   </div>
@@ -122,7 +122,7 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
             </CardHeader>
             <CardContent className="space-y-1 text-sm">
               {order.customerName && <p className="font-medium">{order.customerName}</p>}
-              <p className="text-muted-foreground break-all">{order.email}</p>
+              <p className="break-all text-muted-foreground">{order.email}</p>
               {order.phone && <p className="text-muted-foreground">{order.phone}</p>}
             </CardContent>
           </Card>
@@ -133,7 +133,7 @@ export default async function AdminOrderPage({ params }: { params: Params }) {
                 <CardTitle>Shipping address</CardTitle>
               </CardHeader>
               <CardContent>
-                <address className="text-muted-foreground text-sm not-italic">
+                <address className="text-sm text-muted-foreground not-italic">
                   {address.line1 && <div>{address.line1}</div>}
                   {address.line2 && <div>{address.line2}</div>}
                   <div>

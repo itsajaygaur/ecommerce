@@ -17,12 +17,12 @@ export default async function NewProductPage() {
       <div>
         <Link
           href="/admin/products"
-          className="text-muted-foreground hover:text-foreground mb-3 inline-flex items-center gap-1 text-sm"
+          className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeftIcon className="size-4" />
           Products
         </Link>
-        <h1 className="text-3xl">New product</h1>
+        <h1 className="text-display-3">New product</h1>
       </div>
 
       <ProductForm categories={categories} />

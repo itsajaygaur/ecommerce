@@ -20,17 +20,17 @@ export default function GlobalError({
   }, [error])
 
   return (
-    <div className="container-page flex min-h-svh flex-col items-center justify-center gap-6 text-center">
+    <div className="container-page flex min-h-[70svh] flex-col justify-center py-20">
       <p className="eyebrow">Something went wrong</p>
-      <h1 className="text-4xl sm:text-5xl">That didn&apos;t work</h1>
-      <p className="text-muted-foreground max-w-md">
+      <h1 className="mt-4 border-t pt-8 text-display-2">That didn&apos;t work</h1>
+      <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
         We hit an unexpected error. Trying again often clears it; if it keeps happening, the problem
         is on our side.
       </p>
       {error.digest && (
-        <p className="text-muted-foreground font-mono text-xs">Reference: {error.digest}</p>
+        <p className="mt-4 font-mono text-xs text-muted-foreground">Reference: {error.digest}</p>
       )}
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className="mt-8 flex flex-wrap gap-3">
         <Button onClick={reset}>Try again</Button>
         <Button asChild variant="outline">
           <Link href="/">Back to home</Link>

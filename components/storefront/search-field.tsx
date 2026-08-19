@@ -122,7 +122,7 @@ export function SearchField({ className, autoFocus = false }: SearchFieldProps) 
       </label>
       <SearchIcon
         aria-hidden
-        className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
       />
       <Input
         id="catalog-search"
@@ -143,7 +143,7 @@ export function SearchField({ className, autoFocus = false }: SearchFieldProps) 
             inputRef.current?.focus()
           }}
           aria-label="Clear search"
-          className="text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 p-1"
+          className="absolute top-1/2 right-2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
         >
           <XIcon className="size-4" />
         </button>

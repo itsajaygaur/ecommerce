@@ -95,7 +95,7 @@ export function Pagination({
           <span
             key={`ellipsis-${index}`}
             aria-hidden
-            className="text-muted-foreground flex size-8 items-center justify-center"
+            className="flex size-8 items-center justify-center text-muted-foreground"
           >
             <MoreHorizontalIcon className="size-4" />
           </span>

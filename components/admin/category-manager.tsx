@@ -89,10 +89,10 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
           <CardContent>
             {categories.length === 0 ? (
               <div className="flex flex-col items-center gap-3 py-12 text-center">
-                <div className="bg-muted flex size-12 items-center justify-center rounded-full">
-                  <TagsIcon className="text-muted-foreground size-5" />
+                <div className="flex size-12 items-center justify-center bg-muted">
+                  <TagsIcon className="size-5 text-muted-foreground" />
                 </div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm text-muted-foreground">
                   No categories yet. Add one on the right.
                 </p>
               </div>
@@ -150,12 +150,12 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                       <div className="flex items-start gap-4">
                         <div className="min-w-0 flex-1">
                           <p className="font-medium">{category.name}</p>
-                          <p className="text-muted-foreground text-xs">
+                          <p className="text-xs text-muted-foreground">
                             /{category.slug} · {category.productCount}{' '}
                             {category.productCount === 1 ? 'product' : 'products'}
                           </p>
                           {category.description && (
-                            <p className="text-muted-foreground mt-1 text-sm">
+                            <p className="mt-1 text-sm text-muted-foreground">
                               {category.description}
                             </p>
                           )}

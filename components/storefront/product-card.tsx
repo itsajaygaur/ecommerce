@@ -3,18 +3,19 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { discountPercent, formatMoney } from '@/lib/money'
 import { imageUrl } from '@/lib/storage'
-import { Badge } from '@/components/ui/badge'
 import type { ProductListItem } from '@/lib/catalog'
 import { QuickAddButton } from './quick-add-button'
 
 /**
  * Catalog tile.
  *
- * Changes from the previous card: the title is no longer wrapped in a tooltip
- * (unusable on touch, and it hid the very text it was explaining), the whole card
- * is one link target instead of a bare image, `sizes` is set so phones do not
- * download a 375×563 image at desktop resolution, and price/stock state is legible
- * without hovering.
+ * Square media on a neutral well, then a hairline, then the text block: mono
+ * category, title, cobalt price. The discount is a bare `−22%` in the signal
+ * rather than a filled pill — in a four-up grid the pills were the loudest
+ * thing on the page and the price was not.
+ *
+ * Two contracts the e2e suite depends on, both worth keeping on their own merits:
+ * the root stays an `<article>`, and `categoryName` stays inside it.
  */
 export function ProductCard({
   product,
@@ -32,7 +33,7 @@ export function ProductCard({
 
   return (
     <article className={cn('group relative flex flex-col', className)}>
-      <div className="bg-muted relative aspect-(--aspect-product) overflow-hidden rounded-lg">
+      <div className="relative aspect-(--aspect-product) overflow-hidden bg-muted">
         <Image
           src={imageUrl(product.imagePath)}
           alt={product.title}
@@ -40,46 +41,42 @@ export function ProductCard({
           sizes={sizes}
           priority={priority}
           className={cn(
-            'object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]',
-            soldOut && 'opacity-60 saturate-50',
+            'object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]',
+            soldOut && 'opacity-45 saturate-0',
           )}
         />
 
         <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3">
           {discount !== null && !soldOut ? (
-            <Badge variant="accent" className="shadow-sm">
-              {discount}% off
-            </Badge>
+            <span className="eyebrow bg-background px-1.5 py-1 text-signal">−{discount}%</span>
           ) : (
             <span />
           )}
           {soldOut ? (
-            <Badge variant="secondary" className="shadow-sm">
-              Sold out
-            </Badge>
+            <span className="eyebrow-strong bg-background px-1.5 py-1">Sold out</span>
           ) : product.stock <= 5 ? (
-            <Badge variant="warning" className="shadow-sm">
-              Only {product.stock} left
-            </Badge>
+            // Compact on purpose: "Only N left in stock" wrapped out of the
+            // frame at 390px. The full sentence lives on the product page.
+            <span className="eyebrow-strong bg-background px-1.5 py-1">{product.stock} left</span>
           ) : null}
         </div>
 
-        {/* Quick add sits above the image but below the title link's click target. */}
+        {/*
+         * Quick add rises as a full-width ink bar flush to the base of the
+         * frame — no inset, no radius, so it reads as part of the image edge.
+         * Above the image, below the title link's click target.
+         */}
         {!soldOut && (
-          <div className="absolute inset-x-3 bottom-3 z-10 translate-y-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 focus-within:translate-y-0 focus-within:opacity-100 max-sm:translate-y-0 max-sm:opacity-100">
+          <div className="absolute inset-x-0 bottom-0 z-10 translate-y-full opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 focus-within:translate-y-0 focus-within:opacity-100 max-sm:translate-y-0 max-sm:opacity-100">
             <QuickAddButton product={product} />
           </div>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1 pt-3">
-        {product.categoryName && (
-          <p className="text-muted-foreground text-xs tracking-wide uppercase">
-            {product.categoryName}
-          </p>
-        )}
+      <div className="flex flex-1 flex-col border-t pt-3">
+        {product.categoryName && <p className="eyebrow mb-2">{product.categoryName}</p>}
 
-        <h3 className="font-sans text-sm leading-snug font-medium">
+        <h3 className="font-sans text-sm leading-snug font-medium transition-colors group-hover:text-signal">
           {/* Stretched link: the whole card is clickable, but only the title is in
               the accessibility tree as the link. */}
           <Link href={`/products/${product.slug}`} className="after:absolute after:inset-0">
@@ -87,12 +84,12 @@ export function ProductCard({
           </Link>
         </h3>
 
-        <div className="mt-auto flex items-baseline gap-2 pt-1">
-          <span className="text-sm font-semibold">
+        <div className="mt-auto flex items-baseline gap-2 pt-3">
+          <span data-testid="product-price" className="price text-sm">
             {formatMoney(product.priceCents, product.currency)}
           </span>
           {product.compareAtPriceCents && product.compareAtPriceCents > product.priceCents && (
-            <span className="text-muted-foreground text-xs line-through">
+            <span className="text-xs text-muted-foreground tabular-nums line-through">
               {formatMoney(product.compareAtPriceCents, product.currency)}
             </span>
           )}
@@ -104,11 +101,13 @@ export function ProductCard({
 
 export function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col gap-3">
-      <div className="bg-muted aspect-(--aspect-product) animate-pulse rounded-lg" />
-      <div className="bg-muted h-3 w-1/3 animate-pulse rounded" />
-      <div className="bg-muted h-4 w-4/5 animate-pulse rounded" />
-      <div className="bg-muted h-4 w-1/4 animate-pulse rounded" />
+    <div className="flex flex-col">
+      <div className="aspect-(--aspect-product) animate-pulse bg-muted" />
+      <div className="flex flex-col gap-3 border-t pt-3">
+        <div className="h-2.5 w-1/3 animate-pulse bg-muted" />
+        <div className="h-4 w-4/5 animate-pulse bg-muted" />
+        <div className="h-4 w-1/4 animate-pulse bg-muted" />
+      </div>
     </div>
   )
 }

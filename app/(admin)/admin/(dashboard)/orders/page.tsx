@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ReceiptTextIcon } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Pagination } from '@/components/ui/pagination'
 import {
@@ -38,24 +37,22 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl">Orders</h1>
-        <p className="text-muted-foreground mt-1 text-sm">
+        <h1 className="text-display-3">Orders</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           {total} {total === 1 ? 'order' : 'orders'}
         </p>
       </div>
 
       {items.length === 0 ? (
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed py-20 text-center">
-          <div className="bg-muted flex size-14 items-center justify-center rounded-full">
-            <ReceiptTextIcon className="text-muted-foreground size-6" />
-          </div>
-          <div className="space-y-1">
-            <p className="font-medium">No orders yet</p>
-            <p className="text-muted-foreground max-w-md text-sm">
+        <div className="border-y py-20">
+          <p className="eyebrow mb-3">Empty</p>
+          <p className="text-display-4">No orders yet</p>
+          <div className="mt-2">
+            <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
               Orders are recorded by the Stripe webhook at{' '}
-              <code className="bg-muted rounded px-1 py-0.5 text-xs">/api/webhooks/stripe</code>.
+              <code className="bg-muted px-1 py-0.5 font-mono text-xs">/api/webhooks/stripe</code>.
               Make sure that endpoint is registered for{' '}
-              <code className="bg-muted rounded px-1 py-0.5 text-xs">
+              <code className="bg-muted px-1 py-0.5 font-mono text-xs">
                 checkout.session.completed
               </code>
               .
@@ -63,7 +60,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
           </div>
         </div>
       ) : (
-        <div className="rounded-xl border">
+        <div className="border-y">
           <Table>
             <TableHeader>
               <TableRow>
@@ -88,7 +85,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                   </TableCell>
                   <TableCell className="max-w-[16rem]">
                     <p className="truncate text-sm">{order.customerName ?? '—'}</p>
-                    <p className="text-muted-foreground truncate text-xs">{order.email}</p>
+                    <p className="truncate text-xs text-muted-foreground">{order.email}</p>
                   </TableCell>
                   <TableCell className="text-right tabular-nums">{order.itemCount}</TableCell>
                   <TableCell className="text-right font-medium tabular-nums">
@@ -97,7 +94,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                   <TableCell>
                     <Badge variant={STATUS_VARIANT[order.status]}>{order.status}</Badge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground text-sm">
+                  <TableCell className="text-sm text-muted-foreground">
                     {formatDate(order.createdAt, { dateStyle: 'medium', timeStyle: 'short' })}
                   </TableCell>
                 </TableRow>

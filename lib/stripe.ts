@@ -22,7 +22,7 @@ export function stripe(): Stripe {
   cached = new Stripe(key, {
     apiVersion: '2026-07-29.dahlia',
     typescript: true,
-    appInfo: { name: 'MyKart', version: '1.0.0' },
+    appInfo: { name: 'PATINA', version: '1.0.0' },
   })
 
   return cached

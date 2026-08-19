@@ -1,13 +1,7 @@
 import { Suspense } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  ArrowRightIcon,
-  PackageIcon,
-  RotateCcwIcon,
-  ShieldCheckIcon,
-  TruckIcon,
-} from 'lucide-react'
+import { ArrowRightIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ProductCard, ProductCardSkeleton } from '@/components/storefront/product-card'
 import { getFeaturedProducts, listCategories } from '@/lib/queries/products'
@@ -16,29 +10,25 @@ import { imageUrl } from '@/lib/storage'
 /**
  * Home.
  *
- * Previously this page was a bare four-column grid of every product in the database,
- * fetched with no pagination. It is now an actual landing page: a hero, category
- * entry points, a curated rail and the trust signals a shopper looks for before
- * entering a card number.
+ * Rebuilt around the Ink & Signal language rather than restyled. The pieces that
+ * were carrying a generic "modern template" feel are gone rather than recoloured:
+ * the rounded tinted hero panel, the photo tiles with black gradient scrims and
+ * text floated on top, the icon-and-caption trust row, the rounded CTA card.
+ *
+ * What replaces them is one idea applied consistently — a page assembled from
+ * hairline-ruled cells, with the type doing the work and colour reserved for
+ * price and the primary action.
  */
 
 // The catalog changes rarely, so the page is statically rendered and refreshed in
 // the background. Admin mutations call `revalidatePath('/')` for immediate updates.
 export const revalidate = 3600
 
-const VALUE_PROPS = [
-  {
-    icon: TruckIcon,
-    title: 'Free shipping over ₹2,000',
-    body: 'Dispatched within two working days.',
-  },
-  { icon: RotateCcwIcon, title: '30-day returns', body: 'Unworn, with tags, no questions asked.' },
-  {
-    icon: ShieldCheckIcon,
-    title: 'Secure checkout',
-    body: 'Card details never touch our servers.',
-  },
-  { icon: PackageIcon, title: 'Plastic-free packing', body: 'Recycled board and paper tape only.' },
+const PROMISES = [
+  { title: 'Free shipping', body: 'On orders over ₹2,000, dispatched in two working days.' },
+  { title: '30-day returns', body: 'Unworn, with tags. No questions asked.' },
+  { title: 'Secure checkout', body: 'Card details never touch our servers.' },
+  { title: 'Plastic-free packing', body: 'Recycled board and paper tape only.' },
 ]
 
 export default function HomePage() {
@@ -46,119 +36,143 @@ export default function HomePage() {
     <>
       <Hero />
 
-      <section className="container-page py-16 sm:py-20" aria-labelledby="categories-heading">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow mb-2">Browse</p>
-            <h2 id="categories-heading" className="text-3xl sm:text-4xl">
-              Shop by category
-            </h2>
-          </div>
-          <Button asChild variant="ghost" className="hidden shrink-0 sm:inline-flex">
-            <Link href="/products">
-              View everything <ArrowRightIcon />
-            </Link>
-          </Button>
-        </div>
-
+      <SectionHeading
+        id="categories-heading"
+        kicker="Index"
+        title="Shop by category"
+        href="/products"
+        linkLabel="View everything"
+      />
+      <section className="container-page pb-section" aria-labelledby="categories-heading">
         <Suspense fallback={<CategoryGridSkeleton />}>
           <CategoryGrid />
         </Suspense>
       </section>
 
-      <section className="border-y">
-        <div className="container-page grid gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
-          {VALUE_PROPS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="flex gap-3">
-              <Icon className="text-accent mt-0.5 size-5 shrink-0" aria-hidden />
-              <div>
-                <p className="text-sm font-medium">{title}</p>
-                <p className="text-muted-foreground mt-0.5 text-sm">{body}</p>
-              </div>
+      {/*
+       * The promise band. Four ruled cells sharing hairlines, numbered rather
+       * than iconed — a row of lucide glyphs was the most generic element on
+       * the page and carried no information the numeral doesn't.
+       */}
+      <section className="border-y" aria-label="What to expect">
+        <div className="container-page grid sm:grid-cols-2 lg:grid-cols-4">
+          {PROMISES.map(({ title, body }, index) => (
+            <div
+              key={title}
+              className="border-border py-8 pr-8 not-last:border-b sm:not-last:border-b-0 lg:pl-8 lg:not-first:border-l lg:first:pl-0"
+            >
+              <p className="eyebrow mb-3 text-signal">{String(index + 1).padStart(2, '0')}</p>
+              <p className="text-sm font-medium">{title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{body}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="container-page py-16 sm:py-20" aria-labelledby="featured-heading">
-        <div className="mb-8 flex items-end justify-between gap-4">
-          <div>
-            <p className="eyebrow mb-2">Selected</p>
-            <h2 id="featured-heading" className="text-3xl sm:text-4xl">
-              Worth a closer look
-            </h2>
-          </div>
-          <Button asChild variant="ghost" className="hidden shrink-0 sm:inline-flex">
-            <Link href="/products?sort=newest">
-              See what&apos;s new <ArrowRightIcon />
-            </Link>
-          </Button>
-        </div>
-
+      <SectionHeading
+        id="featured-heading"
+        kicker="Selected"
+        title="Worth a closer look"
+        href="/products?sort=newest"
+        linkLabel="See what's new"
+      />
+      <section className="container-page pb-section" aria-labelledby="featured-heading">
         <Suspense fallback={<FeaturedSkeleton />}>
           <FeaturedRail />
         </Suspense>
       </section>
 
-      <section className="container-page pb-20">
-        <div className="bg-primary text-primary-foreground rounded-2xl px-8 py-14 text-center sm:px-16">
-          <h2 className="font-display mx-auto max-w-2xl text-3xl sm:text-4xl">
-            Built to be repaired, not replaced
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed opacity-80">
-            Every item is chosen because it can be resoled, rewaxed, darned or re-oiled. Buy once,
-            then look after it.
-          </p>
-          <Button asChild variant="accent" size="lg" className="mt-8">
-            <Link href="/products">Browse the catalog</Link>
-          </Button>
-        </div>
-      </section>
+      <Manifesto />
     </>
   )
 }
 
 function Hero() {
   return (
-    <section className="container-page pt-12 pb-4 sm:pt-16">
-      <div className="bg-secondary relative overflow-hidden rounded-2xl">
-        <div className="grid items-center gap-8 lg:grid-cols-2">
-          <div className="animate-fade-up px-8 py-14 sm:px-12 lg:py-20">
-            <p className="eyebrow mb-4">New season</p>
-            <h1 className="text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
-              Considered goods,
-              <br />
-              built to last
-            </h1>
-            <p className="text-muted-foreground mt-6 max-w-md text-base leading-relaxed">
-              A short catalog of apparel, bags, footwear and home goods — the kind of things that
-              look better in year five than they did on day one.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href="/products">Shop all</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/products?sort=newest">New arrivals</Link>
-              </Button>
-            </div>
+    <section className="border-b">
+      <div className="container-page grid items-stretch lg:grid-cols-[1fr_minmax(0,44%)]">
+        <div className="flex animate-fade-up flex-col justify-center py-16 lg:py-28 lg:pr-16">
+          <p className="eyebrow mb-6 text-signal">New season — 01</p>
+          <h1 className="display-hero">
+            Objects that
+            <br />
+            outlast the
+            <br />
+            season
+          </h1>
+          <p className="mt-8 max-w-md text-[0.9375rem] leading-relaxed text-muted-foreground">
+            A short catalogue of considered goods — apparel, bags, footwear and home. Chosen for how
+            they wear in, not for how they photograph.
+          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-8">
+            <Button asChild size="lg" variant="signal">
+              <Link href="/products">Shop all</Link>
+            </Button>
+            <Link
+              href="/products?sort=newest"
+              className="group inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-signal"
+            >
+              New arrivals
+              <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
+        </div>
 
-          <div className="relative hidden aspect-4/3 lg:block">
-            <Image
-              src="/products/weekender.svg"
-              alt=""
-              aria-hidden
-              fill
-              // The LCP element on the home page, so it is fetched eagerly.
-              priority
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+        {/*
+         * The media breaks the page gutter and runs to the viewport edge — the
+         * single move that most separates this from a boxed-hero template.
+         */}
+        <div className="relative -mr-5 min-h-[22rem] bg-muted sm:-mr-8 lg:-mr-12 lg:min-h-[38rem]">
+          <Image
+            src="/products/weekender.svg"
+            alt=""
+            aria-hidden
+            fill
+            // The LCP element on the home page, so it is fetched eagerly.
+            priority
+            sizes="(min-width: 1024px) 44vw, 100vw"
+            className="object-cover"
+          />
         </div>
       </div>
     </section>
+  )
+}
+
+/**
+ * The recurring section masthead: kicker, title, a rule that runs to the link.
+ * The rule is what ties the page together — it appears at every section break.
+ */
+function SectionHeading({
+  id,
+  kicker,
+  title,
+  href,
+  linkLabel,
+}: {
+  id: string
+  kicker: string
+  title: string
+  href: string
+  linkLabel: string
+}) {
+  return (
+    <div className="container-page pt-section pb-8">
+      <p className="eyebrow mb-4">{kicker}</p>
+      <div className="flex items-end gap-6">
+        <h2 id={id} className="shrink-0 text-display-2">
+          {title}
+        </h2>
+        <div className="mb-2 hidden h-px flex-1 border-t border-border sm:block" />
+        <Link
+          href={href}
+          className="group mb-1 hidden shrink-0 items-center gap-2 text-sm font-medium transition-colors hover:text-signal sm:inline-flex"
+        >
+          {linkLabel}
+          <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-1" />
+        </Link>
+      </div>
+    </div>
   )
 }
 
@@ -167,35 +181,44 @@ async function CategoryGrid() {
 
   if (categories.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">
+      <p className="text-sm text-muted-foreground">
         No categories yet. Add products in the admin to populate the storefront.
       </p>
     )
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((category, index) => (
         <Link
           key={category.id}
           href={`/products?category=${category.slug}`}
-          className="group focus-visible:ring-ring relative flex aspect-16/10 items-end overflow-hidden rounded-xl focus-visible:ring-2 focus-visible:ring-offset-2"
+          className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring"
         >
-          <Image
-            src={imageUrl(category.imagePath)}
-            alt=""
-            aria-hidden
-            fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-            priority={index < 3}
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
-          <div className="relative p-6 text-white">
-            <h3 className="font-display text-2xl">{category.name}</h3>
-            <p className="mt-1 text-xs opacity-85">
+          <div className="relative aspect-4/5 overflow-hidden bg-muted">
+            <Image
+              src={imageUrl(category.imagePath)}
+              alt=""
+              aria-hidden
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              priority={index < 3}
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+            />
+          </div>
+          {/*
+           * The caption is lifted out of the image. Text over a black gradient
+           * scrim is the default everyone reaches for; a ruled caption below
+           * the frame reads as a catalogue index instead.
+           */}
+          <div className="mt-4 flex items-baseline gap-3 border-t pt-4">
+            <span className="eyebrow text-signal">{String(index + 1).padStart(2, '0')}</span>
+            <h3 className="text-display-4 transition-colors group-hover:text-signal">
+              {category.name}
+            </h3>
+            <span className="eyebrow ml-auto">
               {category.productCount} {category.productCount === 1 ? 'item' : 'items'}
-            </p>
+            </span>
           </div>
         </Link>
       ))}
@@ -208,12 +231,12 @@ async function FeaturedRail() {
 
   if (products.length === 0) {
     return (
-      <p className="text-muted-foreground text-sm">Nothing in stock right now — check back soon.</p>
+      <p className="text-sm text-muted-foreground">Nothing in stock right now — check back soon.</p>
     )
   }
 
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
@@ -221,11 +244,39 @@ async function FeaturedRail() {
   )
 }
 
+/**
+ * The closing statement. A full-bleed ink band — `.on-ink` re-derives the token
+ * set inside it, so the signal lifts to a value that actually passes contrast on
+ * near-black instead of the 2.95:1 the light-mode cobalt would give.
+ */
+function Manifesto() {
+  return (
+    <section className="on-ink">
+      <div className="container-page py-20 lg:py-28">
+        <p className="eyebrow mb-6 text-signal">Our one rule</p>
+        <h2 className="max-w-3xl text-display-2">Built to be repaired, not replaced</h2>
+        <p className="mt-6 max-w-xl text-[0.9375rem] leading-relaxed text-muted-foreground">
+          Every item here is chosen because it can be resoled, rewaxed, darned or re-oiled. Buy
+          once, then look after it.
+        </p>
+        <Button asChild size="lg" className="mt-10">
+          <Link href="/products">Browse the catalogue</Link>
+        </Button>
+      </div>
+    </section>
+  )
+}
+
 function CategoryGridSkeleton() {
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 3 }).map((_, index) => (
-        <div key={index} className="bg-muted aspect-16/10 animate-pulse rounded-xl" />
+        <div key={index}>
+          <div className="aspect-4/5 animate-pulse bg-muted" />
+          <div className="mt-4 border-t pt-4">
+            <div className="h-5 w-32 animate-pulse bg-muted" />
+          </div>
+        </div>
       ))}
     </div>
   )
@@ -233,7 +284,7 @@ function CategoryGridSkeleton() {
 
 function FeaturedSkeleton() {
   return (
-    <div className="grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
       {Array.from({ length: 4 }).map((_, index) => (
         <ProductCardSkeleton key={index} />
       ))}

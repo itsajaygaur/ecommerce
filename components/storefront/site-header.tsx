@@ -10,9 +10,10 @@ import { listCategories } from '@/lib/queries/products'
 /**
  * Site chrome.
  *
- * The previous header was a single flex row with a bare bag icon, a search box and a
- * theme dropdown — no navigation at all, and no way to reach a category. This adds
- * the announcement bar, category navigation, a mobile menu and a real wordmark.
+ * The backdrop-blur bar this replaces was elevation in disguise — a translucent
+ * pane floating over the page. Here the header is opaque paper divided from the
+ * content by one hairline, and the navigation is a row of mono micro-labels
+ * rather than a strip of hoverable pills.
  */
 export async function SiteHeader() {
   const categories = await listCategories()
@@ -20,29 +21,34 @@ export async function SiteHeader() {
 
   return (
     <>
-      <div className="bg-primary text-primary-foreground">
-        <p className="container-page py-2 text-center text-xs tracking-wide">
-          Complimentary shipping on orders over ₹2,000 · 30-day returns
+      <div className="on-ink">
+        <p className="container-page eyebrow py-2.5 text-center">
+          Complimentary shipping over ₹2,000 · 30-day returns
         </p>
       </div>
 
-      <header className="bg-background/85 supports-[backdrop-filter]:bg-background/65 sticky top-0 z-40 border-b backdrop-blur">
-        <div className="container-page flex h-16 items-center gap-3">
+      <header className="sticky top-0 z-40 border-b bg-background">
+        <div className="container-page flex h-16 items-center gap-4">
           {/* Mobile navigation */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="-ml-2 lg:hidden"
+                aria-label="Open menu"
+              >
                 <MenuIcon className="size-[1.15rem]" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72">
-              <SheetHeader>
-                <SheetTitle className="font-display text-xl">MyKart</SheetTitle>
+            <SheetContent side="left" className="w-80">
+              <SheetHeader className="border-b">
+                <SheetTitle className="font-display text-display-4">PATINA</SheetTitle>
               </SheetHeader>
-              <nav className="flex flex-col gap-1 px-6">
+              <nav className="flex flex-col">
                 <Link
                   href="/products"
-                  className="hover:bg-secondary rounded-md px-3 py-2 text-sm font-medium"
+                  className="border-b px-6 py-4 text-sm font-medium transition-colors hover:text-signal"
                 >
                   All products
                 </Link>
@@ -50,45 +56,45 @@ export async function SiteHeader() {
                   <Link
                     key={category.id}
                     href={`/products?category=${category.slug}`}
-                    className="hover:bg-secondary flex items-center justify-between rounded-md px-3 py-2 text-sm"
+                    className="flex items-center justify-between border-b px-6 py-4 text-sm transition-colors hover:text-signal"
                   >
                     {category.name}
-                    <span className="text-muted-foreground text-xs tabular-nums">
-                      {category.productCount}
-                    </span>
+                    <span className="eyebrow">{category.productCount}</span>
                   </Link>
                 ))}
               </nav>
             </SheetContent>
           </Sheet>
 
+          {/*
+           * The wordmark. Widened hard and tracked open — at this size the
+           * letterforms are the logo, so there is no mark to draw.
+           */}
           <Link
             href="/"
-            className="font-display shrink-0 text-xl leading-none font-semibold tracking-tight"
+            className="shrink-0 font-display text-[1.375rem] leading-none font-semibold tracking-[0.14em]"
+            style={{ fontStretch: '122%' }}
           >
-            MyKart
+            PATINA
           </Link>
 
-          <nav aria-label="Categories" className="ml-6 hidden items-center gap-1 lg:flex">
-            <Link
-              href="/products"
-              className="hover:bg-secondary rounded-md px-3 py-2 text-sm font-medium transition-colors"
-            >
+          <nav aria-label="Categories" className="ml-8 hidden items-center gap-7 lg:flex">
+            <Link href="/products" className="eyebrow transition-colors hover:text-foreground">
               All
             </Link>
             {navCategories.map((category) => (
               <Link
                 key={category.id}
                 href={`/products?category=${category.slug}`}
-                className="hover:bg-secondary rounded-md px-3 py-2 text-sm transition-colors"
+                className="eyebrow transition-colors hover:text-foreground"
               >
                 {category.name}
               </Link>
             ))}
           </nav>
 
-          <div className="ml-auto flex items-center gap-1">
-            <SearchField className="hidden w-56 md:block xl:w-72" />
+          <div className="ml-auto flex items-center gap-2">
+            <SearchField className="hidden w-52 md:block xl:w-64" />
             <ThemeToggle />
             <CartDrawer />
           </div>
