@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import { loadEnvConfig } from '@next/env'
+import { readEnv } from '@/lib/env'
 import { eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
@@ -27,7 +28,7 @@ function generatePassword(): string {
 }
 
 async function main() {
-  const url = process.env.DATABASE_URL
+  const url = readEnv('DATABASE_URL')
   if (!url) {
     console.error('DATABASE_URL is not set.')
     process.exit(1)

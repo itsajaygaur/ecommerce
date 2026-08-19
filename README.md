@@ -41,6 +41,17 @@ the seeded catalog uses local placeholder artwork under `public/products`.
 | `NEXT_PUBLIC_SUPABASE_STORAGE_URL` | for uploads  | Public object base URL. Its hostname is what `next/image` is allowed to optimise.                              |
 | `ADMIN_EMAIL`, `ADMIN_PASSWORD`    | first run    | Read once by `db:seed` to create the initial admin. Not used at runtime afterwards.                            |
 
+Two variables were renamed from the pre-rewrite app. The old names are still read as a
+fallback, with a warning, so an existing deployment does not break on the rename:
+
+| Legacy name  | Current name     |
+| ------------ | ---------------- |
+| `DB_URL`     | `DATABASE_URL`   |
+| `JWT_SECRET` | `SESSION_SECRET` |
+
+`SUPABASE_ANON_KEY` is deliberately **not** aliased to `SUPABASE_SERVICE_ROLE_KEY` — they
+carry different privileges, and the anon key cannot write to Storage.
+
 ### Administrators
 
 Credentials live in `admin_users` as scrypt hashes, so they cannot be changed with a plain
@@ -176,6 +187,15 @@ The checkout and admin paths are the parts worth reading closely:
 2. Run `npm run db:migrate` as part of the release (before the new build serves traffic).
 3. Register the Stripe webhook endpoint and set `STRIPE_WEBHOOK_SECRET`.
 4. On first deploy only, run `npm run db:seed` to create the initial admin.
+
+**A green build does not mean the environment is configured.** Database reads are
+tolerated at build time (see `lib/queries/prerender.ts`), and every secret is validated
+lazily at request time — both deliberate, so one missing value cannot fail a deployment
+that would otherwise be fine. The cost is that a missing `DATABASE_URL` builds and
+deploys cleanly, then throws on the first catalog request while the home page serves an
+empty build-time snapshot. After changing environment variables on a hosted platform,
+**redeploy** — running instances do not pick up new values — and then check
+`/products`, not just `/`.
 
 CI (`.github/workflows/ci.yml`) runs format, lint, typecheck and unit tests, then
 migrates a throwaway Postgres, builds, and runs the Playwright suite against it.
