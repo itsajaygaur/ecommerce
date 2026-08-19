@@ -1,4 +1,5 @@
 import { loadEnvConfig } from '@next/env'
+import { readEnv } from '@/lib/env'
 import { eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
@@ -177,7 +178,7 @@ const PRODUCTS: SeedProduct[] = [
 ]
 
 async function main() {
-  const url = process.env.DATABASE_URL
+  const url = readEnv('DATABASE_URL')
   if (!url) {
     console.error('DATABASE_URL is not set. Copy .env.example to .env.local first.')
     process.exit(1)

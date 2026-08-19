@@ -1,5 +1,6 @@
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
+import { readEnv } from '@/lib/env'
 import * as schema from './schema'
 
 export type Database = PostgresJsDatabase<typeof schema>
@@ -18,7 +19,7 @@ declare global {
   var __mykartDb: Database | undefined
 }
 
-export function createSqlClient(url = process.env.DATABASE_URL) {
+export function createSqlClient(url = readEnv('DATABASE_URL')) {
   if (!url) {
     throw new Error(
       'DATABASE_URL is not set. Copy .env.example to .env.local and point it at a Postgres instance.',

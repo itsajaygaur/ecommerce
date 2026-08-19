@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { loadEnvConfig } from '@next/env'
+import { readEnv } from '@/lib/env'
 import postgres from 'postgres'
 
 loadEnvConfig(process.cwd())
@@ -20,7 +21,7 @@ loadEnvConfig(process.cwd())
 const MIGRATIONS_DIR = join(process.cwd(), 'drizzle')
 
 async function main() {
-  const url = process.env.DATABASE_URL
+  const url = readEnv('DATABASE_URL')
   if (!url) {
     console.error('DATABASE_URL is not set. Copy .env.example to .env.local first.')
     process.exit(1)

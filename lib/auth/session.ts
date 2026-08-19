@@ -19,7 +19,12 @@ export type SessionPayload = {
 }
 
 function secretKey(): Uint8Array {
-  const secret = process.env.SESSION_SECRET
+  // Both names are written as static `process.env.X` references rather than going
+  // through `readEnv()`. This module is imported by `proxy.ts` and so must stay
+  // Edge-safe, and the Edge runtime resolves env vars by compile-time inlining of
+  // literal references — a dynamic `process.env[name]` lookup yields undefined there.
+  // `JWT_SECRET` is what the pre-rewrite app called this; see the README.
+  const secret = process.env.SESSION_SECRET ?? process.env.JWT_SECRET
   if (!secret || secret.length < 32) {
     throw new Error(
       'SESSION_SECRET is missing or too short (needs 32+ characters). Generate one with `openssl rand -base64 48`.',
