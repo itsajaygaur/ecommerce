@@ -387,6 +387,46 @@ async function main() {
 
     console.log(`Seeded ${productCount} products.`)
 
+    // -- Legacy imagery ----------------------------------------------------
+    // The live database predates this catalog and still carries products from
+    // the original storefront, whose imagery was photographic JPEGs uploaded
+    // to Supabase Storage. Re-point those at local illustration SVGs (named
+    // after the product slugs) so the whole catalog reads as one system.
+    // No-op on a fresh database, where these slugs do not exist.
+    const LEGACY_ILLUSTRATED_SLUGS = [
+      'abstract-print-shirt',
+      'check-shirt',
+      'contrast-embroidered-shirt',
+      'easy-care-textured-shirt',
+      'linen-cotton-overshirt',
+      'modal-blend-shirt',
+      'striped-creased-effect-shirt',
+      'textured-shirt',
+    ]
+
+    let legacyCount = 0
+
+    for (const slug of LEGACY_ILLUSTRATED_SLUGS) {
+      const [product] = await db
+        .select({ id: schema.products.id, title: schema.products.title })
+        .from(schema.products)
+        .where(eq(schema.products.slug, slug))
+
+      if (!product) continue
+      legacyCount += 1
+
+      // Same wholesale replacement as above, so re-runs stay idempotent.
+      await db.delete(schema.productImages).where(eq(schema.productImages.productId, product.id))
+      await db.insert(schema.productImages).values({
+        productId: product.id,
+        path: `/products/${slug}.svg`,
+        alt: product.title,
+        position: 0,
+      })
+    }
+
+    console.log(`Re-imaged ${legacyCount} legacy products.`)
+
     // -- Bootstrap admin ---------------------------------------------------
     const email = (process.env.ADMIN_EMAIL || '').trim().toLowerCase()
     const password = process.env.ADMIN_PASSWORD || ''

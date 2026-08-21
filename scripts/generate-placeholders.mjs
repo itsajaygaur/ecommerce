@@ -25,6 +25,58 @@ const shapes = {
     <circle cx="450" cy="600" r="7" fill="${c.line}" opacity="0.6"/>
     <circle cx="450" cy="700" r="7" fill="${c.line}" opacity="0.6"/>`,
 
+  overshirt: (c) => `
+    <path d="M250 380 L370 320 Q450 380 530 320 L650 380 L690 520 L610 555 L610 900 Q450 925 290 900 L290 555 L210 520 Z"
+          fill="${c.body}"/>
+    <path d="M370 320 Q450 420 530 320 L505 300 Q450 360 395 300 Z" fill="${c.shade}"/>
+    <path d="M450 400 L450 900" stroke="${c.line}" stroke-width="4" opacity="0.5"/>
+    <g fill="none" stroke="${c.line}" stroke-width="5" opacity="0.5">
+      <rect x="330" y="480" width="96" height="104" rx="6"/>
+      <rect x="474" y="480" width="96" height="104" rx="6"/>
+    </g>`,
+
+  stripeShirt: (c) => `
+    <path d="M250 380 L370 320 Q450 380 530 320 L650 380 L690 520 L610 555 L610 900 Q450 925 290 900 L290 555 L210 520 Z"
+          fill="${c.body}"/>
+    <path d="M370 320 Q450 420 530 320 L505 300 Q450 360 395 300 Z" fill="${c.shade}"/>
+    <path d="M450 400 L450 900" stroke="${c.line}" stroke-width="4" opacity="0.5"/>
+    <g stroke="${c.line}" stroke-width="4" opacity="0.3">
+      <path d="M330 430 L330 895 M390 425 L390 905 M510 425 L510 905 M570 430 L570 895"/>
+    </g>
+    <circle cx="450" cy="500" r="7" fill="${c.line}" opacity="0.6"/>
+    <circle cx="450" cy="600" r="7" fill="${c.line}" opacity="0.6"/>`,
+
+  checkShirt: (c) => `
+    <path d="M250 380 L370 320 Q450 380 530 320 L650 380 L690 520 L610 555 L610 900 Q450 925 290 900 L290 555 L210 520 Z"
+          fill="${c.body}"/>
+    <path d="M370 320 Q450 420 530 320 L505 300 Q450 360 395 300 Z" fill="${c.shade}"/>
+    <path d="M450 400 L450 900" stroke="${c.line}" stroke-width="4" opacity="0.5"/>
+    <g stroke="${c.line}" stroke-width="4" opacity="0.3">
+      <path d="M350 430 L350 900 M550 430 L550 900 M295 540 L605 540 M292 660 L608 660 M290 780 L610 780"/>
+    </g>
+    <circle cx="450" cy="500" r="7" fill="${c.line}" opacity="0.6"/>
+    <circle cx="450" cy="600" r="7" fill="${c.line}" opacity="0.6"/>`,
+
+  motifShirt: (c) => `
+    <path d="M250 380 L370 320 Q450 380 530 320 L650 380 L690 520 L610 555 L610 900 Q450 925 290 900 L290 555 L210 520 Z"
+          fill="${c.body}"/>
+    <path d="M370 320 Q450 420 530 320 L505 300 Q450 360 395 300 Z" fill="${c.shade}"/>
+    <path d="M450 400 L450 900" stroke="${c.line}" stroke-width="4" opacity="0.5"/>
+    <g fill="none" stroke="${c.line}" stroke-width="5" opacity="0.5">
+      <circle cx="352" cy="472" r="12"/>
+      <circle cx="545" cy="530" r="16"/>
+      <circle cx="398" cy="628" r="9"/>
+      <circle cx="560" cy="690" r="12"/>
+      <circle cx="336" cy="762" r="15"/>
+      <circle cx="486" cy="808" r="10"/>
+    </g>
+    <g fill="${c.line}" opacity="0.5">
+      <circle cx="520" cy="430" r="6"/>
+      <circle cx="360" cy="560" r="6"/>
+      <circle cx="430" cy="742" r="6"/>
+      <circle cx="580" cy="850" r="6"/>
+    </g>`,
+
   knit: (c) => `
     <path d="M270 400 Q450 350 630 400 L680 560 L600 590 L600 880 Q450 905 300 880 L300 590 L220 560 Z"
           fill="${c.body}"/>
@@ -457,6 +509,73 @@ const items = [
     body: '#4c5347',
     shade: '#3a4036',
     line: '#1e221b',
+  },
+  // The eight shirts below match the legacy catalog rows that predate this
+  // artwork; their file names are those products' slugs, so re-pointing the
+  // database at `/products/<slug>.svg` needs no lookup table.
+  {
+    file: 'abstract-print-shirt',
+    shape: 'motifShirt',
+    ground: '#ede4d8',
+    body: '#c07a5a',
+    shade: '#a26248',
+    line: '#5a3423',
+  },
+  {
+    file: 'check-shirt',
+    shape: 'checkShirt',
+    ground: '#eee9dd',
+    body: '#ddd2bd',
+    shade: '#c1b499',
+    line: '#8a4b35',
+  },
+  {
+    file: 'contrast-embroidered-shirt',
+    shape: 'shirt',
+    ground: '#efe8dc',
+    body: '#e6ddc9',
+    shade: '#cbc0a6',
+    line: '#3a2f22',
+  },
+  {
+    file: 'easy-care-textured-shirt',
+    shape: 'shirt',
+    ground: '#eae6dd',
+    body: '#a7b3a4',
+    shade: '#8c998a',
+    line: '#4a544a',
+  },
+  {
+    file: 'linen-cotton-overshirt',
+    shape: 'overshirt',
+    ground: '#f0e9dd',
+    body: '#d3c39f',
+    shade: '#b5a480',
+    line: '#645640',
+  },
+  {
+    file: 'modal-blend-shirt',
+    shape: 'shirt',
+    ground: '#ece4dc',
+    body: '#b08a80',
+    shade: '#957065',
+    line: '#4f3833',
+  },
+  {
+    file: 'striped-creased-effect-shirt',
+    shape: 'stripeShirt',
+    ground: '#eae7e0',
+    body: '#eef0ee',
+    shade: '#d3d8d6',
+    line: '#40566b',
+  },
+  {
+    file: 'textured-shirt',
+    shape: 'shirt',
+    ground: '#ede7da',
+    body: '#cbb391',
+    shade: '#ae9573',
+    line: '#5c4c33',
   },
 ]
 

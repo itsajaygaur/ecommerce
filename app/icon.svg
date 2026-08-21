@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img">
+  <!--
+    Favicon mark. PATINA has no pictorial logo (the wordmark is the brand), so
+    the icon is a single letterform: a blocky "P" in paper on a signal-cobalt
+    tile. Cobalt is used as the ground because it stays legible on both light
+    and dark tab strips, where an ink-on-paper mark would invert poorly.
+
+    The two colors are the light-mode signal and background tokens from
+    app/globals.css, repeated here as literals and moved together with them.
+    (XML comments cannot contain the tokens' double-dash names.) The 2px corner
+    radius mirrors the 0.125rem radius token at this scale, and the same
+    geometry is rasterized by scripts/generate-favicon.mjs.
+  -->
+  <rect width="32" height="32" rx="2" fill="#1f3bff"/>
+  <path fill="#ffffff" fill-rule="evenodd" d="M10 6h12v12h-8v8h-4Z M14 10v4h4v-4Z"/>
+</svg>
