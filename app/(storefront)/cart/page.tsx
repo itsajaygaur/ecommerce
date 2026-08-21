@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { CartView } from '@/components/storefront/cart-view'
+import { isStripeTestMode } from '@/lib/stripe'
 
 export const metadata: Metadata = {
   title: 'Your bag',
@@ -17,7 +18,7 @@ export default function CartPage() {
         <p className="eyebrow mb-4">Bag</p>
         <h1 className="text-display-2">Your bag</h1>
       </header>
-      <CartView />
+      <CartView testMode={isStripeTestMode()} />
     </div>
   )
 }

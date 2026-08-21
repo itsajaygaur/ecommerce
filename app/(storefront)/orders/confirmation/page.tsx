@@ -34,8 +34,14 @@ export default async function ConfirmationPage({ searchParams }: { searchParams:
     console.error('[confirmation] could not finalise order', error)
   }
 
-  // An unknown or unpaid session should not reveal anything; send them home.
-  if (!reference) redirect('/?checkout=incomplete')
+  /*
+   * Unknown, unpaid, or the write failed. Send them to the bag rather than the
+   * home page: `cart-view.tsx` is where the `?checkout=` outcomes are handled, so
+   * this is the one place the shopper actually gets told something went wrong.
+   * Previously this flag was produced here and read nowhere, so a customer whose
+   * order failed to record landed silently on the home page having just paid.
+   */
+  if (!reference) redirect('/cart?checkout=incomplete')
 
   redirect(`/orders/${reference}?new=1`)
 }

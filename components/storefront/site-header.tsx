@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { CartDrawer } from '@/components/storefront/cart-drawer'
 import { SearchField } from '@/components/storefront/search-field'
 import { listCategories } from '@/lib/queries/products'
+import { isStripeTestMode } from '@/lib/stripe'
 
 /**
  * Site chrome.
@@ -96,7 +97,7 @@ export async function SiteHeader() {
           <div className="ml-auto flex items-center gap-2">
             <SearchField className="hidden w-52 md:block xl:w-64" />
             <ThemeToggle />
-            <CartDrawer />
+            <CartDrawer testMode={isStripeTestMode()} />
           </div>
         </div>
 

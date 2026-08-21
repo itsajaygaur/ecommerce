@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { CheckoutButton } from '@/components/storefront/checkout-button'
 import { QuantityStepper } from '@/components/storefront/quantity-stepper'
+import { TestModeNote } from '@/components/storefront/test-mode-note'
 import {
   selectSubtotalCents,
   selectTotalQuantity,
@@ -22,7 +23,7 @@ import { imageUrl } from '@/lib/storage'
 const FREE_SHIPPING_THRESHOLD_CENTS = 200_000
 const SHIPPING_FEE_CENTS = 9900
 
-function CartViewInner() {
+function CartViewInner({ testMode }: { testMode: boolean }) {
   const hydrated = useCartHydrated()
   const searchParams = useSearchParams()
 
@@ -32,10 +33,26 @@ function CartViewInner() {
   const setQuantity = useCart((state) => state.setQuantity)
   const remove = useCart((state) => state.remove)
 
-  // Stripe sends shoppers back here when they abandon the payment page.
+  // Stripe sends shoppers back here on both of its unhappy paths.
   useEffect(() => {
-    if (searchParams.get('checkout') === 'cancelled') {
+    const outcome = searchParams.get('checkout')
+
+    if (outcome === 'cancelled') {
       toast.info('Checkout cancelled', { description: 'Your bag is exactly as you left it.' })
+    }
+
+    /*
+     * The order could not be written after payment. Note the wording: failing to
+     * *record* an order does not mean the charge failed, so this must never read
+     * as "try again" — that invites a double payment on what may well be a
+     * successful purchase.
+     */
+    if (outcome === 'incomplete') {
+      toast.error('We could not confirm your order', {
+        description:
+          'Your payment may still have gone through. Please get in touch before trying again.',
+        duration: 12_000,
+      })
     }
   }, [searchParams])
 
@@ -174,6 +191,8 @@ function CartViewInner() {
           <p className="text-xs text-muted-foreground">
             Final shipping and taxes are confirmed at checkout.
           </p>
+
+          {testMode && <TestModeNote />}
         </div>
       </aside>
     </div>
@@ -181,10 +200,10 @@ function CartViewInner() {
 }
 
 /** Suspense boundary for `useSearchParams`, which reads the ?checkout= flag. */
-export function CartView() {
+export function CartView({ testMode = false }: { testMode?: boolean }) {
   return (
     <Suspense fallback={<CartSkeleton />}>
-      <CartViewInner />
+      <CartViewInner testMode={testMode} />
     </Suspense>
   )
 }

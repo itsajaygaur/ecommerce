@@ -79,7 +79,7 @@ the seeded catalog uses local placeholder artwork under `public/products`.
 | `NEXT_PUBLIC_SITE_URL`             | yes          | Canonical origin. Used for Stripe redirects, sitemap, robots and Open Graph. **Never** taken from the browser. |
 | `SESSION_SECRET`                   | yes          | Signs admin session JWTs. 32+ chars: `openssl rand -base64 48`.                                                |
 | `STRIPE_SECRET_KEY`                | for checkout | Stripe API key.                                                                                                |
-| `STRIPE_WEBHOOK_SECRET`            | for orders   | Signing secret for the endpoint below.                                                                         |
+| `STRIPE_WEBHOOK_SECRET`            | recommended  | Signing secret for the endpoint below. Not required — see [Stripe webhook](#stripe-webhook).                   |
 | `SUPABASE_URL`                     | for uploads  | Supabase project URL.                                                                                          |
 | `SUPABASE_SERVICE_ROLE_KEY`        | for uploads  | Server-side storage credential. Never exposed to the client.                                                   |
 | `SUPABASE_STORAGE_BUCKET`          | for uploads  | Bucket name (default `ecommerce`).                                                                             |
@@ -113,17 +113,45 @@ sign-in throttle.
 
 ### Stripe webhook
 
-Orders are written by the webhook, so register an endpoint for
-`checkout.session.completed` at `<site>/api/webhooks/stripe` and put its signing secret in
-`STRIPE_WEBHOOK_SECRET`. Locally:
+**Orders are written twice over, and the webhook is the second of the two.** After payment
+Stripe redirects to `/orders/confirmation?session_id=…`, which calls the same idempotent
+writer the webhook calls (`lib/orders/record.ts`). A unique index on
+`orders.stripe_session_id` lets the two race safely: whichever arrives first creates the
+order, the other reads back its reference, and stock is decremented exactly once.
+
+So the redirect records the order on its own, and a deployment with no
+`STRIPE_WEBHOOK_SECRET` still takes payments and stores them correctly — nothing fails at
+build or boot, because both Stripe variables are optional and read lazily.
+
+What you lose without the webhook is the case where the shopper never completes the
+redirect: they close the tab on the Stripe page after paying, the connection drops, or they
+use a delayed payment method — `checkout.session.async_payment_succeeded` settles _after_
+the redirect and can only ever arrive by webhook. Those payments would be taken with no
+order recorded. Set it up.
+
+Register an endpoint for `checkout.session.completed` at `<site>/api/webhooks/stripe` and
+put its signing secret in `STRIPE_WEBHOOK_SECRET`. Locally:
 
 ```bash
 stripe listen --forward-to localhost:3000/api/webhooks/stripe
 ```
 
-The confirmation page runs the same idempotent writer, so a customer sees their order even
-if webhook delivery lags. A unique index on `orders.stripe_session_id` guarantees only one
-order is ever created.
+If an endpoint is registered but the secret is missing, the route answers 500 and Stripe
+retries with backoff before disabling the endpoint — a misconfiguration that is quiet from
+inside the app, so check the endpoint's delivery log after the first real payment.
+
+### Test mode
+
+Test and live are separate worlds in Stripe, each with its own keys and its own webhook
+signing secrets. **Test mode needs no account activation and no business verification** —
+those gate live mode, meaning real cards and payouts. A test-mode deployment is fully
+functional: create the webhook endpoint with the Dashboard's _Test mode_ toggle on, and its
+`whsec_…` is the real secret for that deployment.
+
+When `STRIPE_SECRET_KEY` starts with `sk_test_`, the storefront says so at the point of
+payment — the cart summary and the bag drawer show the test card to use. That notice is
+derived from the key prefix (`isStripeTestMode()` in `lib/stripe.ts`) rather than a separate
+flag, so it cannot be left switched on next to a live key.
 
 ---
 

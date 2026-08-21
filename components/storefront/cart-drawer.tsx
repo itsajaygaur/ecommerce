@@ -14,6 +14,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { QuantityStepper } from '@/components/storefront/quantity-stepper'
+import { TestModeNote } from '@/components/storefront/test-mode-note'
 import { CheckoutButton } from '@/components/storefront/checkout-button'
 import {
   selectSubtotalCents,
@@ -33,7 +34,7 @@ import { imageUrl } from '@/lib/storage'
  * until the persisted store has hydrated, which removes the server/client mismatch
  * that made React discard and re-render the header on first paint.
  */
-export function CartDrawer() {
+export function CartDrawer({ testMode = false }: { testMode?: boolean }) {
   const { open, setOpen } = useCartDrawer()
   const hydrated = useCartHydrated()
 
@@ -185,6 +186,8 @@ export function CartDrawer() {
                   Empty bag
                 </button>
               </div>
+
+              {testMode && <TestModeNote />}
             </div>
           </>
         )}
