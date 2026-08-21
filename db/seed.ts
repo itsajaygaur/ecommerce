@@ -175,6 +175,137 @@ const PRODUCTS: SeedProduct[] = [
     category: 'Accessories',
     image: '/products/watch.svg',
   },
+  {
+    title: 'Heavyweight Pocket Tee',
+    description:
+      'Knitted at 240gsm on loopwheel machines that run slowly enough to leave the yarn unstressed, so it hangs off the shoulder instead of clinging. The collar is bound rather than folded, which is the reason it still sits flat after fifty washes.',
+    price: 129900,
+    stock: 88,
+    category: 'Apparel',
+    image: '/products/pocket-tee.svg',
+  },
+  {
+    title: 'Selvedge Denim Jacket',
+    description:
+      'Fourteen-ounce selvedge from a Japanese mill, cut to the classic four-pocket pattern with a squared yoke. Rigid out of the box; a month of wear is roughly when it starts keeping your shape rather than its own.',
+    price: 559900,
+    compareAt: 649900,
+    stock: 16,
+    featured: true,
+    category: 'Apparel',
+    image: '/products/denim-jacket.svg',
+  },
+  {
+    title: 'Waffle Henley',
+    description:
+      'A cotton waffle knit with a three-button placket and a slightly longer body, so it stays where you put it. Warm enough alone in autumn and a useful mid-layer once it is not.',
+    price: 279900,
+    stock: 34,
+    category: 'Apparel',
+    image: '/products/henley.svg',
+  },
+  {
+    title: 'Corduroy Trouser',
+    description:
+      'Eight-wale cotton corduroy, flat front, with a gentle taper below the knee. The pile flattens where you sit and bend and stays plush everywhere else, which is the whole appeal.',
+    price: 359900,
+    stock: 29,
+    category: 'Apparel',
+    image: '/products/corduroy-trouser.svg',
+  },
+  {
+    title: 'Suede Chukka Boot',
+    description:
+      'Two eyelets, an unlined suede upper and a crepe sole that quietly absorbs a day on pavements. Brush it dry rather than washing it and year three will look better than year one.',
+    price: 1349900,
+    stock: 13,
+    featured: true,
+    category: 'Footwear',
+    image: '/products/chukka-boot.svg',
+  },
+  {
+    title: 'Canvas Deck Shoe',
+    description:
+      'Washed cotton canvas over a siped rubber sole that grips a wet deck, or a wet platform. The lacing runs around the collar, so the fit follows the foot rather than the size chart.',
+    price: 549900,
+    compareAt: 619900,
+    stock: 26,
+    category: 'Footwear',
+    image: '/products/deck-shoe.svg',
+  },
+  {
+    title: 'Ribbed Wool Sock, Three-Pack',
+    description:
+      'Merino with a little nylon through the heel and toe, ribbed to the calf so they stay up without leaving a mark. Three pairs to a box: charcoal, oat and moss.',
+    price: 89900,
+    stock: 120,
+    category: 'Footwear',
+    image: '/products/wool-socks.svg',
+  },
+  {
+    title: 'Sailcloth Tote',
+    description:
+      'Recycled sailcloth with taped seams and a doubled base panel, so a full week of groceries will not reshape it. Flat handles that sit on the shoulder instead of rolling into a cord.',
+    price: 379900,
+    stock: 41,
+    category: 'Bags',
+    image: '/products/tote.svg',
+  },
+  {
+    title: 'Zip Dopp Kit',
+    description:
+      'A wipe-clean coated lining, a solid brass zip and a squared base that stands up on a narrow hotel shelf. Deep enough for a full-size bottle to travel upright.',
+    price: 219900,
+    stock: 52,
+    category: 'Bags',
+    image: '/products/dopp-kit.svg',
+  },
+  {
+    title: 'Cast Iron Skillet, 26cm',
+    description:
+      'Sand-cast in one piece and pre-seasoned with flaxseed oil, so it arrives ready for the first pan of onions. The cooking surface is machine-polished — the pebbled finish most modern pans ship with is what makes them stick.',
+    price: 399900,
+    stock: 22,
+    category: 'Home',
+    image: '/products/skillet.svg',
+  },
+  {
+    title: 'Enamel Pour-Over Kettle',
+    description:
+      'A gooseneck that pours slow and straight, in vitreous enamel over steel. The handle stays cool through a full brew, and it takes a stovetop flame as happily as an induction ring.',
+    price: 549900,
+    stock: 19,
+    featured: true,
+    category: 'Home',
+    image: '/products/kettle.svg',
+  },
+  {
+    title: 'Beeswax Pillar Trio',
+    description:
+      'Pure beeswax poured in three heights, so a group of them reads as a composition rather than a set. Honey-scented and drip-free, provided you keep the wick trimmed to 6mm.',
+    price: 149900,
+    stock: 0,
+    category: 'Home',
+    image: '/products/candles.svg',
+  },
+  {
+    title: 'Cashmere Beanie',
+    description:
+      'Recycled cashmere on a fine gauge, so it holds a close shape without pressing a line into your forehead. A deep turn-back cuff that works folded once or twice.',
+    price: 219900,
+    stock: 37,
+    category: 'Accessories',
+    image: '/products/beanie.svg',
+  },
+  {
+    title: 'Waxed Cotton Cap',
+    description:
+      'Six panels of British waxed cotton with a stiffened brim that keeps its curve. Rain beads and rolls off, and the crown darkens slightly wherever it gets handled most.',
+    price: 149900,
+    stock: 46,
+    category: 'Accessories',
+    image: '/products/cap.svg',
+  },
 ]
 
 async function main() {
