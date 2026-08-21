@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="72%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.06"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.045"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <rect width="900" height="1200" fill="#ede6d9"/>
+  <rect width="900" height="1200" fill="url(#g)"/>
+
+  <ellipse cx="450" cy="960" rx="250" ry="46" fill="#000" opacity="0.16" filter="url(#soft)"/>
+
+  
+    <g fill="#e0c98f">
+      <rect x="270" y="520" width="120" height="330"/>
+      <rect x="410" y="450" width="120" height="400"/>
+      <rect x="550" y="580" width="120" height="270"/>
+    </g>
+    <g fill="#c3aa6c">
+      <ellipse cx="330" cy="520" rx="60" ry="16"/>
+      <ellipse cx="470" cy="450" rx="60" ry="16"/>
+      <ellipse cx="610" cy="580" rx="60" ry="16"/>
+    </g>
+    <g stroke="#6b5730" stroke-width="6" stroke-linecap="round">
+      <path d="M330 520 L330 484 M470 450 L470 414 M610 580 L610 544"/>
+    </g>
+
+  <rect width="900" height="1200" filter="url(#grain)" opacity="0.55"/>
+</svg>
